@@ -17,6 +17,6 @@ script:
 after_success:
  - echo "Sucess!!"
 
- branches:
-   only:
-     - master
+ # branches:
+ #   only:
+ #     - master
