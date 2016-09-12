@@ -4,3 +4,9 @@ run:
 
 stop:
 	docker-compose stop
+
+build:
+	docker-compose run --rm dev_pece echo "$pwd"
+
+push:
+	docker-compose run --rm dev_pece echo "Pushado! :)"
