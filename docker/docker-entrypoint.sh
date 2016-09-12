@@ -13,10 +13,13 @@ echo "------ Database connected ------"
 echo "--------------------------------"
 echo ""
 
-if [ ! -d /pece/drupal/node_modules ];
+
+if [ ! -d /pece/drupal/node_modules && ! -z ${IS_PRODUCTION} ];
 then
   npm install && gulp setup && gulp build && gulp site-install
   sudo chmod 775 -Rf /pece/drupal/cnf
+else
+  npm install && gulp setup && gulp build
 fi
 
 echo ""

@@ -10,7 +10,7 @@ clean:
 	docker-compose down
 
 build:
-	docker-compose run --rm production /bin/bash
+	docker-compose run --rm production gulp pack-distro
 
 push:
-	docker-compose run --rm production echo "Pushado! :)"
+	docker-compose run --rm production -w /distro echo "Pushado :)"
