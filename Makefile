@@ -1,4 +1,4 @@
-.PHONY: run stop clean build push
+.PHONY: run stop clean distro
 
 run:
 	docker-compose run --rm -p 8080:80 dev_pece
@@ -9,8 +9,5 @@ stop:
 clean:
 	docker-compose down
 
-build:
+distro:
 	docker-compose run --rm production gulp pack-distro
-
-push:
-	docker-compose run --rm production -w /distro echo "Pushado :)"

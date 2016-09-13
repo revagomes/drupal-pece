@@ -20,13 +20,9 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 script:
- - make build
- - make push
+ - make distro
  - (echo 'Forcing to pass' && exit 0)
 
-after_success:
- - echo "Sucess!!"
-
- # branches:
- #   only:
- #     - master
+# branches:
+#   only:
+#     - master
