@@ -1,22 +1,34 @@
 var gulp = require('gulp');
 var shell = require('shelljs');
+var fs = require('fs');
 
 var cwd = process.cwd();
 var repo = 'https://github.com/revagomes/pece-distro.git';
 
 gulp.task('pack-distro', function () {
   // Clone distro repository.
-  shell.exec('rm -r distro');
+  fs.stat('distro', function(err) {
+    if(err == null) {
+      shell.exec('rm -rf distro');
+      packDistroCallback();
+    }
+    else {
+      packDistroCallback();
+    }
+  });
+
+});
+
+var packDistroCallback = function () {
   shell.exec('git clone ' + repo + ' distro');
 
-  // Build Drupal project.
-  shell.exec('drush kw-s');
-  shell.exec('drush kw-b');
-
   // Update distro repository with new build.
-  shell.exec('cp -r build/* distro/');
+  shell.exec('cp -a build/* distro/');
   shell.cd('distro');
   shell.exec('git add .');
-  shell.exec('git commit -m "Added new build."');
-  shell.exec('git push origin master');
-});
+
+  var currentHead = shell.exec('git rev-parse HEAD').trim();
+  var commitMessage = 'Added new build from ' + currentHead + ' commit of development repository.'
+
+  shell.exec(`git commit -m "${ commitMessage }"`);
+}
