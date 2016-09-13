@@ -31,4 +31,5 @@ var packDistroCallback = function () {
   var commitMessage = 'Added new build from ' + currentHead + ' commit of development repository.'
 
   shell.exec(`git commit -m "${ commitMessage }"`);
+  shell.exec('git push origin master');
 }
