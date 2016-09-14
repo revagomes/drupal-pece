@@ -29,7 +29,7 @@ var packDistroCallback = function () {
 
   var currentHead = shell.exec('git rev-parse HEAD').trim();
   var commitMessage = 'Added new build from ' + currentHead + ' commit of development repository.'
-  var deployUrl = repo.replace('http://', `http://${process.env.GH_TOKEN}@`);
+  var deployUrl = repo.replace('https://', `https://${process.env.GH_TOKEN}@`);
 
   shell.exec(`git config user.name '${process.env.GIT_NAME}'`);
   shell.exec(`git config user.email '${process.env.GIT_EMAIL}'`);
