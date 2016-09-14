@@ -1,7 +1,7 @@
 .PHONY: run stop clean distro
 
 run:
-	docker-compose run --rm -p 8080:80 dev_pece
+	docker-compose run --rm -p 8080:8079 dev_pece
 
 stop:
 	docker-compose stop
