@@ -28,11 +28,8 @@ var packDistroCallback = function () {
   shell.exec('git add .');
 
   var currentHead = shell.exec('git rev-parse HEAD').trim();
-  var commitMessage = 'Added new build from ' + currentHead + ' commit of development repository.'
-  var deployUrl = repo.replace('https://', `https://${process.env.GH_TOKEN}@`);
+  var commitMessage = 'Added new release based on master of development repository.'
 
-  shell.exec(`git config user.name '${process.env.GIT_NAME}'`);
-  shell.exec(`git config user.email '${process.env.GIT_EMAIL}'`);
   shell.exec(`git commit -m "${ commitMessage }"`);
-  shell.exec(`git push -q ${deployUrl} master`);
+  shell.exec(`git push -q ${repo} master`);
 }

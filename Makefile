@@ -8,6 +8,10 @@ stop:
 
 clean:
 	docker-compose down
+	rm -rf ./node_modules
+	rm -rf ./cnf
+	rm -rf ./builds
+	rm -rf ./build
 
-distro:
+distro: clean
 	docker-compose run --rm production gulp pack-distro
