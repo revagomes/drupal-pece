@@ -31,8 +31,8 @@ var packDistroCallback = function () {
   var commitMessage = 'Added new build from ' + currentHead + ' commit of development repository.'
   var deployUrl = repo.replace('http://', `http://${process.env.GH_TOKEN}@`);
 
-  shel.exec(`git config user.name '${process.env.GIT_NAME}'`);
-  shel.exec(`git config user.email '${process.env.GIT_EMAIL}'`);
+  shell.exec(`git config user.name '${process.env.GIT_NAME}'`);
+  shell.exec(`git config user.email '${process.env.GIT_EMAIL}'`);
   shell.exec(`git commit -m "${ commitMessage }"`);
   shell.exec(`git push -q ${deployUrl} master`);
 }
