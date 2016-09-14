@@ -31,5 +31,5 @@ var packDistroCallback = function () {
   var commitMessage = 'Added new release based on master of development repository.'
 
   shell.exec(`git commit -m "${ commitMessage }"`);
-  shell.exec(`git push -q ${repo} master`);
+  shell.exec(`git push ${repo} master`);
 }
