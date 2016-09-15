@@ -29,4 +29,10 @@ var packDistroCallback = function () {
   shell.exec('git add .');
   shell.exec(`git commit -m "${ commitMessage }"`);
   shell.exec(`git push ${repo} master`);
+  shell.cd('..');
+  fs.stat('distro', function(err) {
+    if(err == null) {
+      shell.exec('rm -rf distro');
+    }
+  });
 }
