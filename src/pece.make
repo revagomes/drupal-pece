@@ -120,7 +120,7 @@ projects[features_override][subdir] = contrib
 projects[features][version] = 2.10
 projects[features][subdir] = contrib
 
-projects[diff][version] = 3.2
+projects[diff][version] = 3.3
 projects[diff][subdir] = contrib
 
 projects[strongarm][version] = 2.0
