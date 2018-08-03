@@ -92,7 +92,11 @@ function pece_core_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'field_bundle_settings_node__pece_fieldsite';
   $strongarm->value = array(
-    'view_modes' => array(),
+    'view_modes' => array(
+      'card_plus' => array(
+        'custom_settings' => FALSE,
+      ),
+    ),
     'extra_fields' => array(
       'form' => array(
         'title' => array(
@@ -135,7 +139,7 @@ function pece_core_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'gmap_marker_file';
-  $strongarm->value = '29';
+  $strongarm->value = '9';
   $export['gmap_marker_file'] = $strongarm;
 
   $strongarm = new stdClass();
