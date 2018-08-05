@@ -67,6 +67,6 @@ function pece_core_update_7006() {
     'masonry_views',
   ));
   if (module_exists('features')) {
-    features_revert(array('pece_core' => array('views')));
+    features_revert(array('pece_core' => array('views_view')));
   }
 }
