@@ -131,7 +131,7 @@ projects[views_litepager][subdir] = contrib
 projects[tvi][version] = 1.0
 projects[tvi][subdir] = contrib
 
-projects[better_exposed_filters][version] = 3.5
+projects[better_exposed_filters][version] = 3.6
 projects[better_exposed_filters][subdir] = contrib
 
 projects[masonry][version] = 3.0-beta1
@@ -167,7 +167,7 @@ projects[total_control][subdir] = contrib
 ; Configuration Management
 ; =====================
 
-projects[diff][version] = 3.3
+projects[diff][version] = 3.4
 projects[diff][subdir] = contrib
 
 ; =====================
@@ -484,7 +484,7 @@ projects[amber][patch][2945946] = "https://www.drupal.org/files/issues/amber-mys
 
 ; Backup and Migrate
 projects[backup_migrate][subdir] = contrib
-projects[backup_migrate][version] = 3.4
+projects[backup_migrate][version] = 3.6
 
 ; Node Expiration
 projects[node_expire][subdir] = contrib
