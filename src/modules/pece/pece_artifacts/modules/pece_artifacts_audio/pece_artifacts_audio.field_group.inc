@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * pece_artifacts_audio.field_group.inc
@@ -21,7 +22,7 @@ function pece_artifacts_audio_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Metadata',
-    'weight' => '15',
+    'weight' => '16',
     'children' => array(
       0 => 'field_pece_location',
       1 => 'field_pece_media_duration',
@@ -48,7 +49,7 @@ function pece_artifacts_audio_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Group settings',
-    'weight' => '15',
+    'weight' => '16',
     'children' => array(
       0 => 'group_content_access',
       1 => 'og_group_ref',
