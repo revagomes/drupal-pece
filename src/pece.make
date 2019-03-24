@@ -141,10 +141,6 @@ projects[masonry_views][subdir] = contrib
 ; Administration
 ; =====================
 
-projects[admin_menu][version] = 3.0-rc5
-projects[admin_menu][subdir]  = contrib
-projects[admin_menu][patch][2929025] = https://www.drupal.org/files/issues/admin-menu-2929025-each-function-deprecated-php-7.2.patch
-
 projects[adminimal_admin_menu][version] = 1.7
 projects[adminimal_admin_menu][subdir]  = contrib
 
@@ -237,40 +233,40 @@ projects[fieldable_panels_panes][patch][2826205] = https://www.drupal.org/files/
 ; =====================
 
 ; The Panopoly Foundation
-projects[panopoly_admin][version] = 1.60
+projects[panopoly_admin][version] = 1.65
 projects[panopoly_admin][subdir] = contrib
 
-projects[panopoly_core][version] = 1.60
+projects[panopoly_core][version] = 1.65
 projects[panopoly_core][subdir] = contrib
 
-projects[panopoly_images][version] = 1.60
+projects[panopoly_images][version] = 1.65
 projects[panopoly_images][subdir] = contrib
 
-projects[panopoly_magic][version] = 1.60
+projects[panopoly_magic][version] = 1.65
 projects[panopoly_magic][subdir] = contrib
 
-projects[panopoly_theme][version] = 1.60
+projects[panopoly_theme][version] = 1.65
 projects[panopoly_theme][subdir] = contrib
 
-projects[panopoly_widgets][version] = 1.60
+projects[panopoly_widgets][version] = 1.65
 projects[panopoly_widgets][subdir] = contrib
 
-projects[panopoly_users][version] = 1.60
+projects[panopoly_users][version] = 1.65
 projects[panopoly_users][subdir] = contrib
 
 ; The Panopoly Toolset
-projects[panopoly_pages][version] = 1.60
+projects[panopoly_pages][version] = 1.65
 projects[panopoly_pages][subdir] = contrib
 
-projects[panopoly_search][version] = 1.60
+projects[panopoly_search][version] = 1.65
 projects[panopoly_search][subdir] = contrib
 projects[panopoly_search][patch][] = "./patches/panopoly-remove_panelizer_data_alter_callback.patch"
 
-projects[panopoly_wysiwyg][version] = 1.60
+projects[panopoly_wysiwyg][version] = 1.65
 projects[panopoly_wysiwyg][subdir] = contrib
 
 ; For running the automated tests.
-projects[panopoly_test][version] = 1.60
+projects[panopoly_test][version] = 1.65
 projects[panopoly_test][subdir] = contrib
 
 ; The Panopoly Radix
