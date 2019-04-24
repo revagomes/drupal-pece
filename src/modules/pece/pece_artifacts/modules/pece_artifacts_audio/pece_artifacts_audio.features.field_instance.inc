@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * pece_artifacts_audio.features.field_instance.inc
@@ -29,7 +28,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
-        'weight' => 11,
+        'weight' => 10,
       ),
       'featured' => array(
         'label' => 'above',
@@ -383,89 +382,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'entityreference_autocomplete',
-      'weight' => 11,
-    ),
-  );
-
-  // Exported field_instance:
-  // 'node-pece_artifact_audio-field_pece_file__format'.
-  $field_instances['node-pece_artifact_audio-field_pece_file__format'] = array(
-    'bundle' => 'pece_artifact_audio',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => 'In what file format is this artifact?
-',
-    'display' => array(
-      'card' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'default' => array(
-        'label' => 'above',
-        'module' => 'list',
-        'settings' => array(),
-        'type' => 'list_default',
-        'weight' => 8,
-      ),
-      'featured' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'free_panel' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'highlighted' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'meta_content' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'mini_teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'most_recent' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'fences_wrapper' => 'div_div_div',
-    'field_name' => 'field_pece_file__format',
-    'label' => 'File format',
-    'required' => 1,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'options',
-      'settings' => array(),
-      'type' => 'options_select',
-      'weight' => 8,
+      'weight' => 10,
     ),
   );
 
@@ -638,7 +555,7 @@ function pece_artifacts_audio_field_default_field_instances() {
       'module' => 'options',
       'settings' => array(),
       'type' => 'options_select',
-      'weight' => 10,
+      'weight' => 9,
     ),
   );
 
@@ -723,7 +640,7 @@ function pece_artifacts_audio_field_default_field_instances() {
       'module' => 'creative_commons',
       'settings' => array(),
       'type' => 'select',
-      'weight' => 14,
+      'weight' => 13,
     ),
   );
 
@@ -803,7 +720,7 @@ function pece_artifacts_audio_field_default_field_instances() {
       'module' => 'location_cck',
       'settings' => array(),
       'type' => 'location',
-      'weight' => 13,
+      'weight' => 12,
     ),
   );
 
@@ -835,7 +752,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'module' => 'file',
         'settings' => array(),
         'type' => 'file_default',
-        'weight' => 12,
+        'weight' => 11,
       ),
       'featured' => array(
         'label' => 'above',
@@ -1017,7 +934,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'size' => 20,
       ),
       'type' => 'text_textfield',
-      'weight' => 9,
+      'weight' => 8,
     ),
   );
 
@@ -1127,7 +1044,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
-        'weight' => 10,
+        'weight' => 9,
       ),
       'featured' => array(
         'label' => 'above',
@@ -1189,7 +1106,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'taxonomy_autocomplete',
-      'weight' => 17,
+      'weight' => 16,
     ),
   );
 
@@ -1211,7 +1128,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 9,
+        'weight' => 8,
       ),
       'featured' => array(
         'label' => 'above',
@@ -1301,7 +1218,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 14,
+        'weight' => 13,
       ),
       'featured' => array(
         'label' => 'above',
@@ -1361,7 +1278,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'display_label' => 1,
       ),
       'type' => 'options_onoff',
-      'weight' => 12,
+      'weight' => 11,
     ),
   );
 
@@ -1387,7 +1304,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 13,
+        'weight' => 12,
       ),
       'featured' => array(
         'label' => 'above',
@@ -1445,7 +1362,7 @@ function pece_artifacts_audio_field_default_field_instances() {
       'module' => 'options',
       'settings' => array(),
       'type' => 'options_buttons',
-      'weight' => 15,
+      'weight' => 14,
     ),
   );
 
@@ -1471,7 +1388,7 @@ function pece_artifacts_audio_field_default_field_instances() {
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 15,
+        'weight' => 14,
       ),
       'featured' => array(
         'label' => 'above',
@@ -1656,13 +1573,10 @@ function pece_artifacts_audio_field_default_field_instances() {
   t('Critical Commentary');
   t('Duration');
   t('Fieldsite');
-  t('File format');
   t('Format');
   t('Group content visibility');
   t('Groups audience');
   t('In what file format is this artifact?');
-  t('In what file format is this artifact?
-');
   t('In what language is this artifact?');
   t('Language');
   t('License');

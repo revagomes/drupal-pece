@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * pece_artifacts_audio.strongarm.inc
@@ -108,20 +107,17 @@ function pece_artifacts_audio_strongarm() {
       'meta_content' => array(
         'custom_settings' => TRUE,
       ),
-      'highlighted' => array(
-        'custom_settings' => TRUE,
-      ),
     ),
     'extra_fields' => array(
       'form' => array(
         'locations' => array(
-          'weight' => '19',
+          'weight' => '18',
         ),
         'title' => array(
           'weight' => '0',
         ),
         'path' => array(
-          'weight' => '18',
+          'weight' => '17',
         ),
       ),
       'display' => array(),
