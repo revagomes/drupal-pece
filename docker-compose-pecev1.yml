@@ -36,6 +36,7 @@ services:
     container_name: pece-dev-apache
     links:
       - db_mysql:pece-db
+    entrypoint: ./docker/docker-entrypoint-pecev1.sh
 
   production:
     image: taller/pece
@@ -59,3 +60,4 @@ services:
     links:
       - db_mysql:pece-db
     entrypoint: ./docker/docker-entrypoint-prod.sh
+
