@@ -250,6 +250,14 @@ projects[fieldable_panels_panes][patch][2814117] = https://www.drupal.org/files/
 projects[panels_mini_ipe][version] = 1.0
 projects[panels_mini_ipe][subdir] = contrib
 
+; Page Manager Permissions
+projects[page_manager_permissions][type] = module
+projects[page_manager_permissions][download][type] = git
+projects[page_manager_permissions][download][branch] = "7.x-1.x"
+projects[page_manager_permissions][download][url] = https://git.drupalcode.org/sandbox/chrishks-2094111.git
+projects[page_manager_permissions][download][revision] = dbe1e952f15a0278378b942f2ad281dda15b11fc
+projects[page_manager_permissions][subdir] = contrib
+
 ; =====================
 ; Panopoly
 ; =====================
