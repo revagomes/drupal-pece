@@ -426,7 +426,8 @@ function pece_access_og_user_access_alter(&$perms, $context) {
  */
 function pece_access_allow_contibutors_edit_content(&$perms, $context) {
   // Filter OG Permissions for essay contents.
-  if (strstr($context['string'], 'update') && strstr($context['string'], '_essay')) {
+  if (strstr($context['string'], 'update') || strstr($context['string'],'in page manager')
+     && strstr($context['string'], '_essay')) {
     $contributors = array();
     if (arg(0) === 'node' && is_numeric(arg(1))) {
       $node = node_load(arg(1));
