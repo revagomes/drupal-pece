@@ -17,6 +17,8 @@ projects[module_builder][subdir] = dev
 projects[stage_file_proxy][subdir] = dev
 projects[environment_indicator][subdir] = dev
 projects[search_krumo][subdir] = dev
+projects[util][subdir] = dev
+
 
 ; =====================
 ; Tests
