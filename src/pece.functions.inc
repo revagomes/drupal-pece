@@ -10,12 +10,12 @@
  *   Array of parsed YAML elements (or FALSE on failure).
  */
 function pece_parse_yaml($input = '') {
-  if (function_exists('yaml_parse')) {
-    return yaml_parse($input);
+  if (function_exists('yaml_parser_parse_string')) {
+    return yaml_parser_parse_string($input);
   }
 
   // Load fallback library.
-  if ($path_to_spyc_library = libraries_get_path('spyc-master')) {
+  if ($path_to_spyc_library = libraries_get_path('spyc')) {
     include_once $path_to_spyc_library . '/Spyc.php';
   }
 
