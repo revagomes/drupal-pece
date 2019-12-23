@@ -465,8 +465,11 @@ function pece_access_node_access($node, $op, $account) {
   // $node can be string or object, in this case we need object
   $type = is_object($node) ? $node->type : NULL;
 
-  if ($type == "pece_essay" && in_array($type, node_permissions_get_configured_types())) {
-    if (user_access('edit any ' . $type . ' content', $account) || (user_access('edit own ' . $type . ' content', $account) && ($account->uid == $node->uid))) {
+  if ((strpos($type, 'pece') !== FALSE) && in_array($type, node_permissions_get_configured_types())) {
+    if ((user_access('edit any ' . $type . ' content', $account)
+      || (user_access('edit own ' . $type . ' content', $account))
+      && ($account->uid == $node->uid))
+    ) {
       return NODE_ACCESS_ALLOW;
     }
 
