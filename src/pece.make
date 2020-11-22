@@ -79,6 +79,10 @@ libraries[bgrins-spectrum][download][url] =  https://github.com/bgrins/spectrum/
 libraries[gifresizer][download][type] = git
 libraries[gifresizer][download][url] = https://github.com/revagomes/gifresizer.git
 
+libraries[PhpSpreadsheet][download][type] = file
+libraries[PhpSpreadsheet][download][url] = https://github.com/PHPOffice/PhpSpreadsheet/archive/1.15.0.tar.gz
+libraries[cycle][directory_name] = PHPExcel
+
 ; =====================
 ; Utilities and APIs
 ; =====================
@@ -609,6 +613,10 @@ projects[feeds][version] = 2.0-beta5
 ; Feeds Tamper
 projects[feeds_tamper][subdir] = contrib
 projects[feeds_tamper][version] = 1.2
+
+; Feeds XLS
+projects[feeds_xls][subdir] = contrib
+projects[feeds_xls][version] = 1.2
 
 ; Bibliography
 projects[biblio][subdir] = contrib
