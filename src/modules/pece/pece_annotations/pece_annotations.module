@@ -608,26 +608,34 @@ function pece_annotations_annotate_form_save_annotation(&$form, &$form_state) {
     'comment' => 0,
     'promote' => 0,
   );
+  try {
+    $entity = entity_create('node', $values);
 
-  $entity = entity_create('node', $values);
-  $form_state['object']->nid = $entity->nid;
-  $annotation_values = $form_state['object'];
-  $node_wrapper = entity_metadata_wrapper('node', $entity);
+    $form_state['object']->nid = $entity->nid;
+    $annotation_values = $form_state['object'];
+    $node_wrapper = entity_metadata_wrapper('node', $entity);
 
-  // Manualy add the values into the node.
-  $node_wrapper->title->set($annotation_values->title);
-  $node_wrapper->body->set(array('value' => $annotation_values->body));
-  $node_wrapper->field_pece_uri->set('pece_annotation_' . REQUEST_TIME);
-  $node_wrapper->field_pece_artifact->set(intval($annotation_values->artifact->nid));
-  $node_wrapper->field_pece_analytic->set(intval($annotation_values->analytic));
+    // Add values into the Annotation node.
+    $node_wrapper->title->set($annotation_values->title);
+    $node_wrapper->body->set(array('value' => $annotation_values->body));
+    $node_wrapper->field_pece_uri->set('pece_annotation_' . REQUEST_TIME);
+    $node_wrapper->field_pece_artifact->set(intval($annotation_values->artifact->nid));
+    $node_wrapper->field_pece_analytic->set(intval($annotation_values->analytic));
 
-  // An easy way to save the license and tags fields.
-  field_attach_submit('node', $entity, $form, $form_state);
-  $node_wrapper->save();
+    // An easy way to save License and Tags fields.
+    field_attach_submit('node', $entity, $form, $form_state);
+    $node_wrapper->save();
 
-  drupal_set_message(t('Your annotation was been created. !link ', array(
-    '!link' => l('View annotation', 'node/' . $entity->nid),
-  )), 'status');
+    drupal_set_message(t('Your annotation was been created. !link ', array(
+      '!link' => l('View annotation', 'node/' . $entity->nid),
+    )), 'status');
+  }
+  catch (Exception $e) {
+    watchdog('error', $e->getMessage());
+    drupal_set_message(t('Something went wrong while creating your Annotation on !link. Please try again.', array(
+      '!link' => l('Restart Annotation', 'node/' . $form_state['object']->nid),
+    )), 'error');
+  }
 }
 
 /**
