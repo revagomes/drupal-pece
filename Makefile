@@ -1,4 +1,4 @@
-.PHONY: up run stop clean distro prod run-prod stop-prod
+.PHONY: up run stop clean distro distro-clean prod run-prod stop-prod in-prod log-pnginx log-pphp log-pmysql run-matrix-permissions run-matrix-perm-timer
 
 
 run:
@@ -46,14 +46,17 @@ stop-prod:
 in-prod:
 	docker-compose -f docker-compose-prod.yml exec php_v1 /bin/bash
 
-log-prod-nginx:
+log-pnginx:
 	docker-compose -f docker-compose-prod.yml logs nginx_v1
 
-log-prod-php:
+log-pphp:
 	docker-compose -f docker-compose-prod.yml logs php_v1
 
-log-prod-mysql:
+log-pmysql:
 	docker-compose -f docker-compose-prod.yml logs db_v1
 
 run-matrix-permissions:
 	docker-compose -f docker-compose-prod.yml exec php_v1 sh -c "cd build && php ./scripts/run-tests.sh --concurrency 3 --url http://v1.pece.local PECE"
+
+matrix-perm-timer:
+	docker-compose -f docker-compose-prod.yml exec php_v1 sh -c "date && cd build && php ./scripts/run-tests.sh --concurrency 2 --url http://v1.pece.local PECE && date"
