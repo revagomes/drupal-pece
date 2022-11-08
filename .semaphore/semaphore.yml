@@ -62,4 +62,4 @@ blocks:
         - name: NODE_TAG
           value: '12.8'
         - name: FRONT_DIR
-        - value: './src/front'
+          value: './src/front'
