@@ -8,13 +8,17 @@ blocks:
   - name: 'Block #1'
     task:
       jobs:
-        - name: 'Job #1'
+        - name: 'Setup'
           commands:
-            - checkout
             - make up
-            - docker-compose exec web composer install
-            - docker-compose exec web drush updb -y
-            - docker-compose exec web drush cim -y
+            - docker-compose exec php composer install
+        - name: 'Import configuration'
+          commands:
+            - docker-compose exec php drush updb -y
+            - docker-compose exec php drush cim -y
+        - name: 'Automated Tests'
+          commands: 
+            - make test
       prologue:
         commands:
           - 'git clone -b pece2.0 git@github.com:revagomes/drupal-pece.git'
