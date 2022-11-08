@@ -10,15 +10,9 @@ blocks:
       jobs:
         - name: 'Setup'
           commands:
+            - checkout
             - make up
             - docker-compose exec php composer install
-        - name: 'Import configuration'
-          commands:
-            - docker-compose exec php drush updb -y
-            - docker-compose exec php drush cim -y
-        - name: 'Automated Tests'
-          commands: 
-            - make test
       prologue:
         commands:
           - 'git clone -b pece2.0 git@github.com:revagomes/drupal-pece.git'
@@ -67,3 +61,16 @@ blocks:
           value: '12.8'
         - name: FRONT_DIR
           value: './src/front'
+  - name: 'Block #2'
+    task:
+      jobs:
+        - name: 'Import configuration'
+          commands:
+            - docker-compose exec php drush updb -y
+            - docker-compose exec php drush cim -y
+  - name: 'Block #3'
+    task:
+      jobs:
+        - name: 'Automated Tests'
+          commands: 
+            - make test
