@@ -284,9 +284,6 @@
             "1910608 - Ajax + Allow settings: Allowed settings lost on ajax (exposed forms/pager)" : "https://www.drupal.org/files/issues/2020-12-01/views_content-keyword-substitution-1910608-83.patch",
             "1000146 - Edit text of 'More Link' from Panel config." : "https://www.drupal.org/files/issues/2019-01-09/views_panes-more_link_text-1000146-33.patch"
           },
-          "drupal/views": {
-            "2284423 - Having the same sort twice doesn't work correctly." : "https://www.drupal.org/files/issues/2019-04-29/views-same_sort_twice-2284423-3.patch"
-          },
           "drupal/panelizer": {
             "2812807 - Add entity object to hook_panelizer_access." : "https://www.drupal.org/files/issues/panelizer--2812807--provide-entity-on-access-hooks.patch",
             "1549608 - Cannot import exported Panelizer permissions using Features/defaultconfig if handler cache is stale." : "https://www.drupal.org/files/issues/panelizer-n1549608-26.patch",
@@ -324,7 +321,6 @@
             "Fix Membership pending message" : "./src/patches/og_ui-membership-pending-request-msg.patch"
           },
           "drupal/profile2": {
-            "1273026 - Profile2 context from relationship doesn't work" : "https://www.drupal.org/files/ctools-profile2_from_user-1273026-10_0.patch",
             "1273026 - Fix Ctools new file" : "https://www.drupal.org/files/ctools-new-file-1273026-10.patch",
             "1307538 - Fix entity_info failure during install" : "https://www.drupal.org/files/issues/profile2-fix_entity_info_failure_during_install-1307538-10-7.x-1.x-dev.patch"
           },
