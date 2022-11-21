@@ -5,6 +5,7 @@ var fs = require('fs');
 var cwd = process.cwd();
 var kwEnvConfigFile = cwd + '/cnf/environment';
 var repo = 'https://github.com/PECE-project/pece-distro.git';
+var commitMessage = 'New release based on master of development repository.';
 
 gulp.task('distro:prepare', function (done) {
   // Clone distro repository.
@@ -43,7 +44,16 @@ gulp.task('distro:build:sync', function (done) {
   syncLocalFiles();
 });
 
-var rebuildToProd = function () {
+gulp.task('distro:pack', gulp.series('distro:prepare'), function (done) {
+
+  shell.cd('distro');
+  shell.exec('git add -A');
+  // shell.exec('git commit -m "' + commitMessage + '"');
+  //shell.exec('git push ' + repo + ' master');
+  done();
+});
+
+var rebuildToProd = function (done) {
   // Backup kw previous config and set kraftwagen env config to production
   // in order to prevent symlinks in the profile folder.
   shell.exec('mv ' + kwEnvConfigFile + ' ' + kwEnvConfigFile + '.bkp');

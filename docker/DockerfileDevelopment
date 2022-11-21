@@ -1,4 +1,4 @@
-FROM nginx:1.14
+FROM nginx:1.23
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -40,10 +40,11 @@ RUN apt-get update -y && apt-get install -y \
 ### INSTALL PHP-FPM AND EXTENSION
 ## Add PHP7.4 source
 RUN wget https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
-RUN echo "deb https://packages.sury.org/php/ stretch main" | sudo tee /etc/apt/sources.list.d/php.list
+RUN echo "deb https://packages.sury.org/php/ bullseye main" | sudo tee /etc/apt/sources.list.d/php.list
 
 RUN apt-get install -y \
-    libmagickwand-dev
+    libmagickwand-dev \
+    libffi-dev
 
 RUN apt-get update -y && apt-get install -y \
     php7.4-fpm \
@@ -85,18 +86,18 @@ RUN curl -sS https://getcomposer.org/installer | php && \
 
 ### INSTALL NODEJS
 ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 10.x
+ENV NODE_VERSION 12.x
 
 RUN curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
 RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION | bash -
 RUN apt-get update -y && apt-get install -y nodejs
 
-RUN npm install npm -g
-RUN npm install bower gulp -g
+RUN npm install -y yarn
+RUN npm install bower gulp
 RUN npm cache verify
 
 ### INSTALL DRUSH
-RUN wget -O drush.phar https://github.com/drush-ops/drush/releases/download/8.1.18/drush.phar
+RUN wget -O drush.phar https://github.com/drush-ops/drush/releases/download/8.4.11/drush.phar
 RUN chmod +x drush.phar
 RUN mv drush.phar /usr/local/bin/drush
 
@@ -122,18 +123,18 @@ RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php/7.4/fpm/php.ini 
 ### APPLY NGINX CONFIGURATION
 RUN mkdir -p /tmp/logs
 RUN chmod 777 /tmp/logs
-COPY ./docker/nginx.conf /etc/nginx/nginx.conf
-COPY ./docker/fastcgi.conf /etc/nginx/fastcgi.conf
-COPY ./docker/bash.bashrc /etc/bash.bashrc
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./fastcgi.conf /etc/nginx/fastcgi.conf
+COPY ./bash.bashrc /etc/bash.bashrc
 
 ### CREATE USER FOR DEVELOPMENT
 RUN echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     useradd -u 1000 -G www-data,sudo -d /pece --shell /bin/bash -m pece && \
     echo "secret\nsecret" | passwd pece
 
-COPY ./docker/bash.bashrc /etc/bash.bashrc
+COPY ./bash.bashrc /etc/bash.bashrc
 RUN chmod +x /etc/bash.bashrc
-ADD ./docker/docker-entrypoint.sh /pece/docker-entrypoint.sh
+ADD ./docker-entrypoint.sh /pece/docker-entrypoint.sh
 RUN chmod +x /pece/docker-entrypoint.sh
 
 USER pece
