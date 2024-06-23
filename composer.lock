@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf7236d4fcfdbc9e4f45bd37fdb7ce7d",
+    "content-hash": "b3264285dba6f574cc406f3914118226",
     "packages": [
         {
             "name": "composer/installers",
@@ -1065,6 +1065,10 @@
                 {
                     "name": "realityloop",
                     "homepage": "https://www.drupal.org/user/139189"
+                },
+                {
+                    "name": "rjjakes",
+                    "homepage": "https://www.drupal.org/user/3457245"
                 }
             ],
             "description": "Minimalist administration theme.",
@@ -2626,10 +2630,6 @@
             ],
             "authors": [
                 {
-                    "name": "drupalspoons",
-                    "homepage": "https://www.drupal.org/user/3647684"
-                },
-                {
                     "name": "moshe weitzman",
                     "homepage": "https://www.drupal.org/user/23"
                 }
@@ -2722,23 +2722,23 @@
         },
         {
             "name": "drupal/drupal",
-            "version": "7.91.0",
+            "version": "7.101.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/drupal.git",
-                "reference": "7.91"
+                "reference": "7.101"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/drupal-7.91.zip",
-                "reference": "7.91",
-                "shasum": "36512a6115095fbf0af39c8821cd09bb7c476715"
+                "url": "https://ftp.drupal.org/files/projects/drupal-7.101.zip",
+                "reference": "7.101",
+                "shasum": "fca285b26eff9a342f41e75b6e36a656531577a2"
             },
             "type": "drupal-core",
             "extra": {
                 "drupal": {
-                    "version": "7.91",
-                    "datestamp": "1658338462",
+                    "version": "7.101",
+                    "datestamp": "1717606635",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -2787,6 +2787,10 @@
                     "homepage": "https://www.drupal.org/user/4166"
                 },
                 {
+                    "name": "justafish",
+                    "homepage": "https://www.drupal.org/user/161058"
+                },
+                {
                     "name": "larowlan",
                     "homepage": "https://www.drupal.org/user/395439"
                 },
@@ -2795,16 +2799,24 @@
                     "homepage": "https://www.drupal.org/user/1078742"
                 },
                 {
+                    "name": "longwave",
+                    "homepage": "https://www.drupal.org/user/246492"
+                },
+                {
                     "name": "mcdruid",
                     "homepage": "https://www.drupal.org/user/255969"
                 },
                 {
-                    "name": "quietone",
-                    "homepage": "https://www.drupal.org/user/2572884"
+                    "name": "nod_",
+                    "homepage": "https://www.drupal.org/user/598310"
                 },
                 {
-                    "name": "webchick",
-                    "homepage": "https://www.drupal.org/user/24967"
+                    "name": "poker10",
+                    "homepage": "https://www.drupal.org/user/272316"
+                },
+                {
+                    "name": "quietone",
+                    "homepage": "https://www.drupal.org/user/2572884"
                 },
                 {
                     "name": "xjm",
@@ -3129,10 +3141,6 @@
                     "homepage": "https://www.drupal.org/user/214652"
                 },
                 {
-                    "name": "TR",
-                    "homepage": "https://www.drupal.org/user/202830"
-                },
-                {
                     "name": "bojanz",
                     "homepage": "https://www.drupal.org/user/86106"
                 },
@@ -3151,6 +3159,10 @@
                 {
                     "name": "mglaman",
                     "homepage": "https://www.drupal.org/user/2416470"
+                },
+                {
+                    "name": "TR",
+                    "homepage": "https://www.drupal.org/user/202830"
                 }
             ],
             "description": "Provides token replacements for all properties that have no tokens and are known to the entity API.",
@@ -3917,7 +3929,7 @@
                     "datestamp": "1599490273",
                     "security-coverage": {
                         "status": "not-covered",
-                        "message": "Project has not opted into security advisory coverage!"
+                        "message": "Beta releases are not covered by Drupal security advisories."
                     }
                 }
             },
@@ -3969,10 +3981,6 @@
                 {
                     "name": "tobby",
                     "homepage": "https://www.drupal.org/user/154797"
-                },
-                {
-                    "name": "tristanoneil",
-                    "homepage": "https://www.drupal.org/user/340659"
                 },
                 {
                     "name": "twistor",
@@ -4071,7 +4079,7 @@
                     "datestamp": "1599490273",
                     "security-coverage": {
                         "status": "not-covered",
-                        "message": "Project has not opted into security advisory coverage!"
+                        "message": "Beta releases are not covered by Drupal security advisories."
                     }
                 }
             },
@@ -4123,10 +4131,6 @@
                 {
                     "name": "tobby",
                     "homepage": "https://www.drupal.org/user/154797"
-                },
-                {
-                    "name": "tristanoneil",
-                    "homepage": "https://www.drupal.org/user/340659"
                 },
                 {
                     "name": "twistor",
@@ -5815,6 +5819,14 @@
             ],
             "authors": [
                 {
+                    "name": "arthurf",
+                    "homepage": "https://www.drupal.org/user/27259"
+                },
+                {
+                    "name": "becw",
+                    "homepage": "https://www.drupal.org/user/81067"
+                },
+                {
                     "name": "Dave Reid",
                     "homepage": "https://www.drupal.org/user/53892"
                 },
@@ -5831,18 +5843,6 @@
                     "homepage": "https://www.drupal.org/user/3260690"
                 },
                 {
-                    "name": "ParisLiakos",
-                    "homepage": "https://www.drupal.org/user/1011436"
-                },
-                {
-                    "name": "arthurf",
-                    "homepage": "https://www.drupal.org/user/27259"
-                },
-                {
-                    "name": "becw",
-                    "homepage": "https://www.drupal.org/user/81067"
-                },
-                {
                     "name": "effulgentsia",
                     "homepage": "https://www.drupal.org/user/78040"
                 },
@@ -5857,6 +5857,10 @@
                 {
                     "name": "ksenzee",
                     "homepage": "https://www.drupal.org/user/139855"
+                },
+                {
+                    "name": "ParisLiakos",
+                    "homepage": "https://www.drupal.org/user/1011436"
                 },
                 {
                     "name": "paul.lovvik",
@@ -5975,6 +5979,14 @@
             ],
             "authors": [
                 {
+                    "name": "arthurf",
+                    "homepage": "https://www.drupal.org/user/27259"
+                },
+                {
+                    "name": "becw",
+                    "homepage": "https://www.drupal.org/user/81067"
+                },
+                {
                     "name": "Dave Reid",
                     "homepage": "https://www.drupal.org/user/53892"
                 },
@@ -5991,18 +6003,6 @@
                     "homepage": "https://www.drupal.org/user/3260690"
                 },
                 {
-                    "name": "ParisLiakos",
-                    "homepage": "https://www.drupal.org/user/1011436"
-                },
-                {
-                    "name": "arthurf",
-                    "homepage": "https://www.drupal.org/user/27259"
-                },
-                {
-                    "name": "becw",
-                    "homepage": "https://www.drupal.org/user/81067"
-                },
-                {
                     "name": "effulgentsia",
                     "homepage": "https://www.drupal.org/user/78040"
                 },
@@ -6017,6 +6017,10 @@
                 {
                     "name": "ksenzee",
                     "homepage": "https://www.drupal.org/user/139855"
+                },
+                {
+                    "name": "ParisLiakos",
+                    "homepage": "https://www.drupal.org/user/1011436"
                 },
                 {
                     "name": "paul.lovvik",
@@ -7348,10 +7352,6 @@
                     "homepage": "https://www.drupal.org/user/61203"
                 },
                 {
-                    "name": "Letharion",
-                    "homepage": "https://www.drupal.org/user/373603"
-                },
-                {
                     "name": "esmerel",
                     "homepage": "https://www.drupal.org/user/164022"
                 },
@@ -7362,6 +7362,10 @@
                 {
                     "name": "joelpittet",
                     "homepage": "https://www.drupal.org/user/160302"
+                },
+                {
+                    "name": "Letharion",
+                    "homepage": "https://www.drupal.org/user/373603"
                 },
                 {
                     "name": "merlinofchaos",
@@ -7378,10 +7382,6 @@
                 {
                     "name": "samuel.mortenson",
                     "homepage": "https://www.drupal.org/user/2582268"
-                },
-                {
-                    "name": "tim.plunkett",
-                    "homepage": "https://www.drupal.org/user/241634"
                 }
             ],
             "description": "Provide a UI for managing some Panels directly on the frontend, instead of having to use the backend.",
@@ -7418,10 +7418,6 @@
                     "homepage": "https://www.drupal.org/user/61203"
                 },
                 {
-                    "name": "Letharion",
-                    "homepage": "https://www.drupal.org/user/373603"
-                },
-                {
                     "name": "esmerel",
                     "homepage": "https://www.drupal.org/user/164022"
                 },
@@ -7432,6 +7428,10 @@
                 {
                     "name": "joelpittet",
                     "homepage": "https://www.drupal.org/user/160302"
+                },
+                {
+                    "name": "Letharion",
+                    "homepage": "https://www.drupal.org/user/373603"
                 },
                 {
                     "name": "merlinofchaos",
@@ -7448,10 +7448,6 @@
                 {
                     "name": "samuel.mortenson",
                     "homepage": "https://www.drupal.org/user/2582268"
-                },
-                {
-                    "name": "tim.plunkett",
-                    "homepage": "https://www.drupal.org/user/241634"
                 }
             ],
             "description": "Create mini panels that can be used as blocks by Drupal and panes by other panel modules.",
@@ -7574,17 +7570,17 @@
         },
         {
             "name": "drupal/panopoly_admin",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_admin.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_admin-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "6770d2e353b886029518d6ff7350c40434230f60"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_admin-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "a7a35edd437f09a84b6e0c11da11b65e90b01ee5"
             },
             "require": {
                 "drupal/admin_views": "*",
@@ -7601,8 +7597,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509440",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705448939",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7635,17 +7631,17 @@
         },
         {
             "name": "drupal/panopoly_core",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_core.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_core-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "048e00a3e98722b8e31d798bc35853be2a540702"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_core-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "feabaa63ee7075dd430396a71d05f8959cd5b588"
             },
             "require": {
                 "drupal/ctools": "*",
@@ -7679,8 +7675,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509495",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705448955",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7713,17 +7709,17 @@
         },
         {
             "name": "drupal/panopoly_images",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_images.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_images-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "69b262b2230c7ca0c19cb4b68b7b8c109fdf6d01"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_images-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "359001c2c9934d72f1e96a02d8207af697ae632d"
             },
             "require": {
                 "drupal/ctools": "*",
@@ -7738,8 +7734,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509514",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705448993",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7772,17 +7768,17 @@
         },
         {
             "name": "drupal/panopoly_magic",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_magic.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_magic-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "3bc5ba8fb8b1b63bcf6e185f8586ab354ed94d4f"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_magic-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "be3eff5bcee0743e538f64715d4caef8f82f8fd2"
             },
             "require": {
                 "drupal/ctools": "*",
@@ -7796,8 +7792,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509570",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705449029",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7830,17 +7826,17 @@
         },
         {
             "name": "drupal/panopoly_pages",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_pages.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_pages-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "64d2ef9c134adab53a8e72df52605c65a0307066"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_pages-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "4e55eb64511b42c05514c515a496e20ac26bd141"
             },
             "require": {
                 "drupal/ctools": "*",
@@ -7856,8 +7852,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509573",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705449051",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7890,17 +7886,17 @@
         },
         {
             "name": "drupal/panopoly_search",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_search.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_search-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "cd0ecd48fcac832dc1a8ef4b7f4bd2ce4fddb12d"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_search-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "f643d4702c9718d44e2f9009a4528be2fff1c707"
             },
             "require": {
                 "drupal/drupal": "*",
@@ -7919,8 +7915,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509627",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705449053",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7957,17 +7953,17 @@
         },
         {
             "name": "drupal/panopoly_theme",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_theme.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_theme-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "0d8996aa1df1299b81bed66f02632294e8af9834"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_theme-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "2ea8fd6f85eb46b25fe2d92eb18c600700cfa437"
             },
             "require": {
                 "drupal/drupal": "~7.0",
@@ -7977,8 +7973,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509689",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705449110",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8011,17 +8007,17 @@
         },
         {
             "name": "drupal/panopoly_users",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_users.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_users-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "896d65c90fcfe6e0bcb6fb8d35106f8c2ab0a9ec"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_users-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "178f725105d6ed4b117388effb6e40d0d04d84ff"
             },
             "require": {
                 "drupal/ctools": "*",
@@ -8039,8 +8035,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509694",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705449110",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8073,17 +8069,17 @@
         },
         {
             "name": "drupal/panopoly_widgets",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_widgets.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_widgets-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "ce61b41e594813cd2be07b9bbdd4ffb9dbc59176"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_widgets-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "a47835a395706be974dd4c010856e6aeb252b54e"
             },
             "require": {
                 "drupal/ctools": "*",
@@ -8107,8 +8103,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509757",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705449144",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8141,17 +8137,17 @@
         },
         {
             "name": "drupal/panopoly_wysiwyg",
-            "version": "1.90.0",
+            "version": "1.94.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/panopoly_wysiwyg.git",
-                "reference": "7.x-1.90"
+                "reference": "7.x-1.94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panopoly_wysiwyg-7.x-1.90.zip",
-                "reference": "7.x-1.90",
-                "shasum": "e217e566a9637be58991c393e553bf9f0311a048"
+                "url": "https://ftp.drupal.org/files/projects/panopoly_wysiwyg-7.x-1.94.zip",
+                "reference": "7.x-1.94",
+                "shasum": "48356a1f81c11be229f2ef1f452631280094856d"
             },
             "require": {
                 "drupal/caption_filter": "*",
@@ -8173,8 +8169,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.90",
-                    "datestamp": "1658509767",
+                    "version": "7.x-1.94",
+                    "datestamp": "1705449157",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -9114,16 +9110,16 @@
             ],
             "authors": [
                 {
-                    "name": "TR",
-                    "homepage": "https://www.drupal.org/user/202830"
-                },
-                {
                     "name": "fago",
                     "homepage": "https://www.drupal.org/user/16747"
                 },
                 {
                     "name": "klausi",
                     "homepage": "https://www.drupal.org/user/262198"
+                },
+                {
+                    "name": "TR",
+                    "homepage": "https://www.drupal.org/user/202830"
                 }
             ],
             "description": "Administrative interface for managing rules.",
@@ -9194,17 +9190,17 @@
         },
         {
             "name": "drupal/search_api",
-            "version": "1.28.0",
+            "version": "1.27.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/search_api.git",
-                "reference": "7.x-1.28"
+                "reference": "7.x-1.27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/search_api-7.x-1.28.zip",
-                "reference": "7.x-1.28",
-                "shasum": "f22bd072875300708cb33f44c179e06cfd37ed01"
+                "url": "https://ftp.drupal.org/files/projects/search_api-7.x-1.27.zip",
+                "reference": "7.x-1.27",
+                "shasum": "bf04760fef76378c6e398d3318f49b57c39e4dfd"
             },
             "require": {
                 "drupal/drupal": "~7.0",
@@ -9217,8 +9213,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-1.28",
-                    "datestamp": "1628174436",
+                    "version": "7.x-1.27",
+                    "datestamp": "1612192160",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -10929,17 +10925,17 @@
         },
         {
             "name": "drupal/views",
-            "version": "3.26.0",
+            "version": "3.29.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views.git",
-                "reference": "7.x-3.26"
+                "reference": "7.x-3.29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views-7.x-3.26.zip",
-                "reference": "7.x-3.26",
-                "shasum": "b14000c73bba67944db64aa5dfaf1522927f52cb"
+                "url": "https://ftp.drupal.org/files/projects/views-7.x-3.29.zip",
+                "reference": "7.x-3.29",
+                "shasum": "4fc548a8f5252993d5edba557e2aa77ba0fe5b3b"
             },
             "require": {
                 "drupal/ctools": "*",
@@ -10948,8 +10944,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.x-3.26",
-                    "datestamp": "1660837301",
+                    "version": "7.x-3.29",
+                    "datestamp": "1678722009",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -10998,7 +10994,7 @@
                     "homepage": "https://www.drupal.org/user/26979"
                 },
                 {
-                    "name": "RenatoG",
+                    "name": "renatog",
                     "homepage": "https://www.drupal.org/user/3326031"
                 },
                 {
@@ -11319,7 +11315,7 @@
                     "homepage": "https://www.drupal.org/user/26979"
                 },
                 {
-                    "name": "RenatoG",
+                    "name": "renatog",
                     "homepage": "https://www.drupal.org/user/3326031"
                 },
                 {
@@ -11525,31 +11521,6 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/yaml_parser"
             }
-        },
-        {
-            "name": "ec-europa/toolkit",
-            "version": "3.6.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ec-europa/toolkit.git",
-                "reference": "54961279f555da6ae04951e7d796f61615d093cd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ec-europa/toolkit/zipball/54961279f555da6ae04951e7d796f61615d093cd",
-                "reference": "54961279f555da6ae04951e7d796f61615d093cd",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "EUPL-1.1"
-            ],
-            "description": "NextEuropa Toolkit packaged for composer",
-            "support": {
-                "source": "https://github.com/ec-europa/toolkit/tree/3.6.6"
-            },
-            "time": "2022-06-15T08:10:33+00:00"
         },
         {
             "name": "grasmash/expander",
@@ -11828,6 +11799,16 @@
                 "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
             "time": "2021-05-03T11:20:27+00:00"
+        },
+        {
+            "name": "revagomes/toolkit",
+            "version": "10.12.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/revagomes/toolkit",
+                "reference": "release/10.x"
+            },
+            "type": "library"
         },
         {
             "name": "symfony/console",
@@ -12949,7 +12930,7 @@
             "version": "8.3.13",
             "source": {
                 "type": "git",
-                "url": "https://git.drupalcode.org/project/coder.git",
+                "url": "https://github.com/pfrenssen/coder.git",
                 "reference": "d3286d571b19633cc296d438c36b9aed195de43c"
             },
             "require": {
@@ -14043,12 +14024,12 @@
             "version": "3.7.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
                 "reference": "1359e176e9307e906dc3d890bcc9603ff6d90619"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/1359e176e9307e906dc3d890bcc9603ff6d90619",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/1359e176e9307e906dc3d890bcc9603ff6d90619",
                 "reference": "1359e176e9307e906dc3d890bcc9603ff6d90619",
                 "shasum": ""
             },
@@ -14993,5 +14974,5 @@
         "php": ">=7.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.6.0"
 }
