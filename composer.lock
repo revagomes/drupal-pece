@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3264285dba6f574cc406f3914118226",
+    "content-hash": "67c44c956cde1308e1c7c7466103eebd",
     "packages": [
         {
             "name": "composer/installers",
@@ -2722,26 +2722,26 @@
         },
         {
             "name": "drupal/drupal",
-            "version": "7.101.0",
+            "version": "7.103.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/drupal.git",
-                "reference": "7.101"
+                "reference": "7.103"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/drupal-7.101.zip",
-                "reference": "7.101",
-                "shasum": "fca285b26eff9a342f41e75b6e36a656531577a2"
+                "url": "https://ftp.drupal.org/files/projects/drupal-7.103.zip",
+                "reference": "7.103",
+                "shasum": "a0229fb358f59750160e11494545a3279dd1f041"
             },
             "type": "drupal-core",
             "extra": {
                 "drupal": {
-                    "version": "7.101",
-                    "datestamp": "1717606635",
+                    "version": "7.103",
+                    "datestamp": "1734205950",
                     "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
+                        "status": "not-covered",
+                        "message": "Drupal 7 and earlier are not covered by Drupal security advisories!"
                     }
                 }
             },
@@ -2751,44 +2751,188 @@
             ],
             "authors": [
                 {
+                    "name": "acbramley",
+                    "homepage": "https://www.drupal.org/user/1036766"
+                },
+                {
                     "name": "alexpott",
                     "homepage": "https://www.drupal.org/user/157725"
+                },
+                {
+                    "name": "amateescu",
+                    "homepage": "https://www.drupal.org/user/729614"
+                },
+                {
+                    "name": "amber himes matz",
+                    "homepage": "https://www.drupal.org/user/246309"
+                },
+                {
+                    "name": "andrewmacpherson",
+                    "homepage": "https://www.drupal.org/user/265648"
+                },
+                {
+                    "name": "andy-blum",
+                    "homepage": "https://www.drupal.org/user/3507787"
+                },
+                {
+                    "name": "andypost",
+                    "homepage": "https://www.drupal.org/user/118908"
+                },
+                {
+                    "name": "attiks",
+                    "homepage": "https://www.drupal.org/user/105002"
+                },
+                {
+                    "name": "bbrala",
+                    "homepage": "https://www.drupal.org/user/3366066"
+                },
+                {
+                    "name": "benjifisher",
+                    "homepage": "https://www.drupal.org/user/683300"
+                },
+                {
+                    "name": "berdir",
+                    "homepage": "https://www.drupal.org/user/214652"
                 },
                 {
                     "name": "bnjmnm",
                     "homepage": "https://www.drupal.org/user/2369194"
                 },
                 {
+                    "name": "Bojhan",
+                    "homepage": "https://www.drupal.org/user/87969"
+                },
+                {
                     "name": "catch",
                     "homepage": "https://www.drupal.org/user/35733"
+                },
+                {
+                    "name": "chrisdarke",
+                    "homepage": "https://www.drupal.org/user/725016"
                 },
                 {
                     "name": "ckrina",
                     "homepage": "https://www.drupal.org/user/1206650"
                 },
                 {
-                    "name": "Dries",
+                    "name": "daffie",
+                    "homepage": "https://www.drupal.org/user/116368"
+                },
+                {
+                    "name": "danielveza",
+                    "homepage": "https://www.drupal.org/user/3362504"
+                },
+                {
+                    "name": "david strauss",
+                    "homepage": "https://www.drupal.org/user/93254"
+                },
+                {
+                    "name": "dmsmidt",
+                    "homepage": "https://www.drupal.org/user/198330"
+                },
+                {
+                    "name": "dries",
                     "homepage": "https://www.drupal.org/user/1"
+                },
+                {
+                    "name": "drumm",
+                    "homepage": "https://www.drupal.org/user/3064"
                 },
                 {
                     "name": "Drupal",
                     "homepage": "https://www.drupal.org/user/3"
                 },
                 {
+                    "name": "dww",
+                    "homepage": "https://www.drupal.org/user/46549"
+                },
+                {
+                    "name": "dyannenova",
+                    "homepage": "https://www.drupal.org/user/277051"
+                },
+                {
+                    "name": "e0ipso",
+                    "homepage": "https://www.drupal.org/user/550110"
+                },
+                {
+                    "name": "eclipsegc",
+                    "homepage": "https://www.drupal.org/user/61203"
+                },
+                {
                     "name": "effulgentsia",
                     "homepage": "https://www.drupal.org/user/78040"
                 },
                 {
-                    "name": "Fabianx",
+                    "name": "fabianx",
                     "homepage": "https://www.drupal.org/user/693738"
                 },
                 {
-                    "name": "Gábor Hojtsy",
+                    "name": "fago",
+                    "homepage": "https://www.drupal.org/user/16747"
+                },
+                {
+                    "name": "gábor hojtsy",
                     "homepage": "https://www.drupal.org/user/4166"
+                },
+                {
+                    "name": "greggles",
+                    "homepage": "https://www.drupal.org/user/36762"
+                },
+                {
+                    "name": "hchonov",
+                    "homepage": "https://www.drupal.org/user/2901211"
+                },
+                {
+                    "name": "heddn",
+                    "homepage": "https://www.drupal.org/user/1463982"
+                },
+                {
+                    "name": "jhedstrom",
+                    "homepage": "https://www.drupal.org/user/208732"
+                },
+                {
+                    "name": "jibran",
+                    "homepage": "https://www.drupal.org/user/1198144"
+                },
+                {
+                    "name": "joelpittet",
+                    "homepage": "https://www.drupal.org/user/160302"
+                },
+                {
+                    "name": "john cook",
+                    "homepage": "https://www.drupal.org/user/536990"
+                },
+                {
+                    "name": "johnalbin",
+                    "homepage": "https://www.drupal.org/user/32095"
+                },
+                {
+                    "name": "juampynr",
+                    "homepage": "https://www.drupal.org/user/682736"
                 },
                 {
                     "name": "justafish",
                     "homepage": "https://www.drupal.org/user/161058"
+                },
+                {
+                    "name": "jwitkowski79",
+                    "homepage": "https://www.drupal.org/user/3608576"
+                },
+                {
+                    "name": "kim.pepper",
+                    "homepage": "https://www.drupal.org/user/370574"
+                },
+                {
+                    "name": "kjay",
+                    "homepage": "https://www.drupal.org/user/195038"
+                },
+                {
+                    "name": "kostyashupenko",
+                    "homepage": "https://www.drupal.org/user/3281537"
+                },
+                {
+                    "name": "kristiaanvandeneynde",
+                    "homepage": "https://www.drupal.org/user/1345130"
                 },
                 {
                     "name": "larowlan",
@@ -2799,32 +2943,192 @@
                     "homepage": "https://www.drupal.org/user/1078742"
                 },
                 {
+                    "name": "lendude",
+                    "homepage": "https://www.drupal.org/user/690914"
+                },
+                {
                     "name": "longwave",
                     "homepage": "https://www.drupal.org/user/246492"
+                },
+                {
+                    "name": "mac_weber",
+                    "homepage": "https://www.drupal.org/user/789986"
+                },
+                {
+                    "name": "marcoscano",
+                    "homepage": "https://www.drupal.org/user/1288796"
+                },
+                {
+                    "name": "markconroy",
+                    "homepage": "https://www.drupal.org/user/336910"
                 },
                 {
                     "name": "mcdruid",
                     "homepage": "https://www.drupal.org/user/255969"
                 },
                 {
+                    "name": "mherchel",
+                    "homepage": "https://www.drupal.org/user/118428"
+                },
+                {
+                    "name": "mikelutz",
+                    "homepage": "https://www.drupal.org/user/2972409"
+                },
+                {
+                    "name": "mlhess",
+                    "homepage": "https://www.drupal.org/user/102818"
+                },
+                {
+                    "name": "mogtofu33",
+                    "homepage": "https://www.drupal.org/user/278510"
+                },
+                {
+                    "name": "mpdonadio",
+                    "homepage": "https://www.drupal.org/user/325244"
+                },
+                {
+                    "name": "mradcliffe",
+                    "homepage": "https://www.drupal.org/user/157079"
+                },
+                {
+                    "name": "neclimdul",
+                    "homepage": "https://www.drupal.org/user/48673"
+                },
+                {
+                    "name": "nick_schuch",
+                    "homepage": "https://www.drupal.org/user/1412036"
+                },
+                {
+                    "name": "nicxvan",
+                    "homepage": "https://www.drupal.org/user/531480"
+                },
+                {
                     "name": "nod_",
                     "homepage": "https://www.drupal.org/user/598310"
+                },
+                {
+                    "name": "pameeela",
+                    "homepage": "https://www.drupal.org/user/1431110"
+                },
+                {
+                    "name": "pdureau",
+                    "homepage": "https://www.drupal.org/user/1903334"
+                },
+                {
+                    "name": "phenaproxima",
+                    "homepage": "https://www.drupal.org/user/205645"
                 },
                 {
                     "name": "poker10",
                     "homepage": "https://www.drupal.org/user/272316"
                 },
                 {
+                    "name": "proeung",
+                    "homepage": "https://www.drupal.org/user/1785940"
+                },
+                {
+                    "name": "pwolanin",
+                    "homepage": "https://www.drupal.org/user/49851"
+                },
+                {
                     "name": "quietone",
                     "homepage": "https://www.drupal.org/user/2572884"
+                },
+                {
+                    "name": "rachel_norfolk",
+                    "homepage": "https://www.drupal.org/user/66273"
+                },
+                {
+                    "name": "rainbreaw",
+                    "homepage": "https://www.drupal.org/user/525170"
+                },
+                {
+                    "name": "realityloop",
+                    "homepage": "https://www.drupal.org/user/139189"
+                },
+                {
+                    "name": "sam152",
+                    "homepage": "https://www.drupal.org/user/1485048"
+                },
+                {
+                    "name": "saschaeggi",
+                    "homepage": "https://www.drupal.org/user/1999056"
+                },
+                {
+                    "name": "seanb",
+                    "homepage": "https://www.drupal.org/user/545912"
+                },
+                {
+                    "name": "shaal",
+                    "homepage": "https://www.drupal.org/user/60045"
+                },
+                {
+                    "name": "smaz",
+                    "homepage": "https://www.drupal.org/user/1468640"
+                },
+                {
+                    "name": "smustgrave",
+                    "homepage": "https://www.drupal.org/user/3252890"
+                },
+                {
+                    "name": "sparklingrobots",
+                    "homepage": "https://www.drupal.org/user/1840068"
+                },
+                {
+                    "name": "steveoliver",
+                    "homepage": "https://www.drupal.org/user/42327"
+                },
+                {
+                    "name": "swentel",
+                    "homepage": "https://www.drupal.org/user/107403"
+                },
+                {
+                    "name": "tedbow",
+                    "homepage": "https://www.drupal.org/user/240860"
+                },
+                {
+                    "name": "tim.plunkett",
+                    "homepage": "https://www.drupal.org/user/241634"
+                },
+                {
+                    "name": "timmillwood",
+                    "homepage": "https://www.drupal.org/user/227849"
+                },
+                {
+                    "name": "tstoeckler",
+                    "homepage": "https://www.drupal.org/user/107158"
+                },
+                {
+                    "name": "twod",
+                    "homepage": "https://www.drupal.org/user/244227"
+                },
+                {
+                    "name": "vijaycs85",
+                    "homepage": "https://www.drupal.org/user/93488"
+                },
+                {
+                    "name": "volkswagenchick",
+                    "homepage": "https://www.drupal.org/user/3332522"
+                },
+                {
+                    "name": "wim leers",
+                    "homepage": "https://www.drupal.org/user/99777"
                 },
                 {
                     "name": "xjm",
                     "homepage": "https://www.drupal.org/user/65776"
                 },
                 {
+                    "name": "yesct",
+                    "homepage": "https://www.drupal.org/user/258568"
+                },
+                {
                     "name": "yoroy",
                     "homepage": "https://www.drupal.org/user/41502"
+                },
+                {
+                    "name": "znerol",
+                    "homepage": "https://www.drupal.org/user/63999"
                 }
             ],
             "homepage": "https://www.drupal.org/project/drupal",
@@ -14973,6 +15277,6 @@
     "platform": {
         "php": ">=7.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

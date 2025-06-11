@@ -340,6 +340,7 @@
             "Fix keydown event error": "./src/patches/pdf_reader-keydown_event_page_error.patch"
           },
           "drupal/amber" : {
+            "Fix deprecated ${var} in strings": "./src/patches/amber_fix-deprecated-code-issues.patch",
             "2945946 - Installation problem with MySQL 5.7 : All parts of a PRIMARY KEY must be NOT NULL" : "https://www.drupal.org/files/issues/amber-mysql5.7_compatibility-2945946-4.patch",
             "Fix error on AmberPDO class.": "./src/patches/amber_fix-AmberPDO-class-issue.patch"
           },
