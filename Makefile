@@ -79,3 +79,39 @@ nuxt-run:
 ##	start-automation	:	Start automation workflows.
 start-automation:
 	docker exec $(shell docker ps --filter name='^/$(PROJECT_NAME)_n8n' --format "{{ .ID }}") python /root/.pece/startWorkflows.py
+
+##	k8s-build	:	Build container images for Kubernetes deployment.
+##		Set IMAGE_TAG to specify version (default: latest).
+##		Set CONTAINER_REGISTRY to push to private registry.
+k8s-build:
+	@echo "Building container images for Kubernetes..."
+	cd deploy && $(MAKE) build
+	@echo "Finished building container images."
+
+##	k8s-deploy	:	Deploy to Kubernetes cluster.
+##		Set ENV to specify environment (default: production).
+##		Deploys all services and waits for rollout completion.
+k8s-deploy:
+	@echo "Deploying $(PROJECT_NAME) to Kubernetes..."
+	cd deploy && $(MAKE) deploy
+	@echo "Finished deploying $(PROJECT_NAME) to Kubernetes."
+
+##	k8s-rollback	:	Rollback Kubernetes deployment to previous version.
+##		Set COMPONENT to rollback specific service (php, nginx, mariadb).
+##		Default: rollback all components.
+k8s-rollback:
+	@echo "Rolling back Kubernetes deployment..."
+	cd deploy && $(MAKE) rollback
+	@echo "Finished rollback."
+
+##	k8s-status	:	Show Kubernetes deployment status.
+##		Displays pods, deployments, services, ingress, and HPA status.
+k8s-status:
+	@echo "Kubernetes deployment status for $(PROJECT_NAME):"
+	cd deploy && $(MAKE) status
+
+##	k8s-logs	:	View Kubernetes deployment logs.
+##		Set COMPONENT to view specific service logs (php, nginx, mariadb).
+##		Default: show all logs.
+k8s-logs:
+	cd deploy && $(MAKE) logs

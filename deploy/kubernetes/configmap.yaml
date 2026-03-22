@@ -1,0 +1,126 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pece-config
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+  annotations:
+    description: "Non-sensitive configuration for PECE Drupal application"
+data:
+  # ==============================================================================
+  # Database Connection (non-sensitive)
+  # ==============================================================================
+  DB_HOST: "mariadb"
+  DB_PORT: "3306"
+  DB_NAME: "drupal"
+  DB_USER: "drupal"
+  DB_DRIVER: "mysql"
+
+  # ==============================================================================
+  # Drupal Configuration
+  # ==============================================================================
+  DRUPAL_ACCOUNT_USERNAME: "admin"
+  DRUPAL_ACCOUNT_EMAIL: "admin@example.com"
+  SITE_LANGUAGE: "English"
+
+  # Drupal trusted host patterns (JSON array)
+  # Update this with your actual domain(s)
+  DRUPAL_TRUSTED_HOST_PATTERNS: '["^pece\\.local$","^.*\\.pece\\.local$"]'
+
+  # Drupal base URL
+  DRUPAL_BASE_URL: "http://pece.local/web"
+
+  # Migration from v1 (if applicable)
+  MIGRATE_V1_URL: "http://v1.pece.local"
+
+  # ==============================================================================
+  # PHP-FPM Configuration
+  # ==============================================================================
+  PHP_FPM_USER: "www-data"
+  PHP_FPM_GROUP: "www-data"
+  PHP_MEMORY_LIMIT: "512M"
+  PHP_MAX_EXECUTION_TIME: "300"
+  PHP_MAX_INPUT_TIME: "300"
+  PHP_POST_MAX_SIZE: "100M"
+  PHP_UPLOAD_MAX_FILESIZE: "100M"
+
+  # PHP error reporting (adjust for production)
+  PHP_DISPLAY_ERRORS: "Off"
+  PHP_DISPLAY_STARTUP_ERRORS: "Off"
+  PHP_ERROR_REPORTING: "E_ALL & ~E_DEPRECATED & ~E_STRICT"
+
+  # PHP session configuration
+  PHP_SESSION_SAVE_HANDLER: "files"
+  PHP_SESSION_SAVE_PATH: "/tmp"
+
+  # ==============================================================================
+  # PHP OPcache Configuration
+  # ==============================================================================
+  PHP_OPCACHE_ENABLE: "1"
+  PHP_OPCACHE_MEMORY: "256"
+  PHP_OPCACHE_MAX_FILES: "20000"
+  PHP_OPCACHE_VALIDATE_TIMESTAMPS: "0"  # Disabled for production performance
+  PHP_OPCACHE_REVALIDATE_FREQ: "60"
+  PHP_OPCACHE_INTERNED_STRINGS_BUFFER: "16"
+  PHP_OPCACHE_FAST_SHUTDOWN: "1"
+
+  # ==============================================================================
+  # Nginx Configuration
+  # ==============================================================================
+  NGINX_BACKEND_HOST: "php"
+  NGINX_SERVER_ROOT: "/var/www/html/web"
+  NGINX_VHOST_PRESET: "drupal10"
+  NGINX_STATIC_OPEN_FILE_CACHE: "on"  # Enable for production
+  NGINX_ERROR_LOG_LEVEL: "warn"  # Use "debug" for troubleshooting
+
+  # Client body settings
+  NGINX_CLIENT_MAX_BODY_SIZE: "100M"
+  NGINX_CLIENT_BODY_TIMEOUT: "60s"
+
+  # FastCGI settings
+  NGINX_FASTCGI_READ_TIMEOUT: "300s"
+  NGINX_FASTCGI_BUFFERS: "16 32k"
+  NGINX_FASTCGI_BUFFER_SIZE: "64k"
+
+  # ==============================================================================
+  # Environment and Feature Flags
+  # ==============================================================================
+  ENVIRONMENT: "production"
+  DEBUG_MODE: "false"
+
+  # Domain configuration
+  DOMAIN: "pece.local"
+  PROJECT_NAME: "pece"
+  PROJECT_BASE_URL: "pece.local"
+
+  # ==============================================================================
+  # Optional Services
+  # ==============================================================================
+  REDIS_ENABLED: "false"
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+
+  SOLR_ENABLED: "false"
+  SOLR_HOST: "solr"
+  SOLR_PORT: "8983"
+  SOLR_CORE: "drupal"
+
+  # ==============================================================================
+  # Mail Configuration
+  # ==============================================================================
+  PHP_SENDMAIL_PATH: "/usr/sbin/sendmail -t -i -S mailhog:1025"
+
+  # ==============================================================================
+  # Miscellaneous
+  # ==============================================================================
+  COLUMNS: "80"  # Terminal width for Drush commands
+
+  # Drupal file system paths (relative to NGINX_SERVER_ROOT)
+  DRUPAL_FILES_PUBLIC: "sites/default/files"
+  DRUPAL_FILES_PRIVATE: "/var/www/private"
+  DRUPAL_TEMP: "/tmp"

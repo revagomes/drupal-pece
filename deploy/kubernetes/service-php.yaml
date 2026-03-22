@@ -1,0 +1,31 @@
+---
+# PHP-FPM Service (ClusterIP)
+# Provides stable endpoint for Nginx to connect to PHP-FPM
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: php-fpm
+  annotations:
+    description: "ClusterIP service for PHP-FPM access by Nginx web server"
+spec:
+  type: ClusterIP
+  # This is a regular ClusterIP service (not headless), so it gets a cluster IP
+  selector:
+    app: pece
+    component: php-fpm
+  ports:
+    - name: php-fpm
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+  sessionAffinity: ClientIP  # Maintain session affinity for FastCGI connections
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # 3 hours timeout for long-running PHP processes

@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+  annotations:
+    description: "PECE Drupal 11 production namespace"
+    contact: "admin@example.com"

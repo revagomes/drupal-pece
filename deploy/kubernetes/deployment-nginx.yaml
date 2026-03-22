@@ -1,0 +1,181 @@
+---
+# Nginx Web Server Deployment
+# Serves static files and proxies PHP requests to PHP-FPM
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: nginx
+  annotations:
+    description: "Nginx web server deployment for PECE Drupal application"
+spec:
+  replicas: 2  # Can be scaled horizontally
+  selector:
+    matchLabels:
+      app: pece
+      component: nginx
+
+  # Deployment strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0  # Ensure zero downtime
+
+  # Pod template
+  template:
+    metadata:
+      labels:
+        app: pece
+        environment: production
+        project: pece-drupal
+        component: nginx
+      annotations:
+        description: "Nginx container serving Drupal static files and proxying to PHP-FPM"
+    spec:
+      terminationGracePeriodSeconds: 30  # Allow graceful shutdown
+
+      # Security context for pod
+      securityContext:
+        fsGroup: 101  # nginx group for wodby/nginx image
+        runAsNonRoot: true
+
+      containers:
+        - name: nginx
+          image: wodby/nginx:1.27
+          imagePullPolicy: IfNotPresent
+
+          # Security context for container
+          securityContext:
+            runAsUser: 101  # nginx user
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+                - NET_BIND_SERVICE
+
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+
+          # Environment variables from ConfigMap
+          env:
+            # Nginx backend configuration
+            - name: NGINX_BACKEND_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_BACKEND_HOST
+            - name: NGINX_SERVER_ROOT
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_SERVER_ROOT
+            - name: NGINX_VHOST_PRESET
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_VHOST_PRESET
+
+            # Nginx optimization settings
+            - name: NGINX_STATIC_OPEN_FILE_CACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_STATIC_OPEN_FILE_CACHE
+            - name: NGINX_ERROR_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_ERROR_LOG_LEVEL
+
+            # Client request settings
+            - name: NGINX_CLIENT_MAX_BODY_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_CLIENT_MAX_BODY_SIZE
+            - name: NGINX_CLIENT_BODY_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_CLIENT_BODY_TIMEOUT
+
+            # FastCGI settings for PHP-FPM communication
+            - name: NGINX_FASTCGI_READ_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_FASTCGI_READ_TIMEOUT
+            - name: NGINX_FASTCGI_BUFFERS
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_FASTCGI_BUFFERS
+            - name: NGINX_FASTCGI_BUFFER_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: NGINX_FASTCGI_BUFFER_SIZE
+
+          # Volume mounts (same as PHP to serve static files)
+          volumeMounts:
+            - name: drupal-files
+              mountPath: /var/www/html
+              subPath: drupal-code  # Same subdirectory as PHP
+              readOnly: true  # Nginx only needs read access
+
+          # Resource limits and requests
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+
+          # Liveness probe - check if Nginx is responsive
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: localhost
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+
+          # Readiness probe - check if Nginx is ready to accept requests
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: localhost
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+
+      # Volumes
+      volumes:
+        - name: drupal-files
+          persistentVolumeClaim:
+            claimName: drupal-files

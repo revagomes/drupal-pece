@@ -1,0 +1,72 @@
+---
+# Ingress Resource for External Access to PECE Drupal Application
+# Routes external HTTP/HTTPS traffic to Nginx service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pece
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: ingress
+  annotations:
+    description: "Ingress resource for external access to PECE Drupal application via Nginx"
+    # Ingress class annotation (compatible with older ingress controllers)
+    kubernetes.io/ingress.class: "nginx"
+    # SSL/TLS configuration
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Optional: Auto-provision TLS certificates
+    # Nginx-specific annotations for Drupal optimization
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"  # Match NGINX_CLIENT_MAX_BODY_SIZE
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"  # Match NGINX_FASTCGI_READ_TIMEOUT
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/client-body-timeout: "60"  # Match NGINX_CLIENT_BODY_TIMEOUT
+    # Security headers
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  # Force HTTPS (when TLS is configured)
+    nginx.ingress.kubernetes.io/ssl-protocols: "TLSv1.2 TLSv1.3"
+    # Connection settings
+    nginx.ingress.kubernetes.io/affinity: "cookie"  # Session affinity for Drupal
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+spec:
+  # IngressClassName (modern alternative to kubernetes.io/ingress.class annotation)
+  # Comment out if using older Kubernetes versions (<1.18)
+  ingressClassName: nginx
+
+  # TLS configuration (placeholder - update with actual certificate)
+  tls:
+    - hosts:
+        - pece.local
+        - www.pece.local
+      # Secret name containing TLS certificate and key
+      # Create this secret manually or use cert-manager to auto-provision
+      # kubectl create secret tls pece-tls --cert=path/to/tls.crt --key=path/to/tls.key -n pece
+      secretName: pece-tls
+
+  # Routing rules
+  rules:
+    # Primary domain
+    - host: pece.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  number: 80
+
+    # WWW subdomain (optional)
+    - host: www.pece.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  number: 80

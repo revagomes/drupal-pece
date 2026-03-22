@@ -1,0 +1,70 @@
+---
+# HorizontalPodAutoscaler for PHP-FPM Deployment
+# Automatically scales PHP-FPM pods based on CPU utilization
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: php
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: php-fpm
+  annotations:
+    description: "Horizontal Pod Autoscaler for PHP-FPM deployment, scales based on CPU utilization"
+spec:
+  # Target deployment to scale
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: php
+
+  # Replica limits
+  minReplicas: 2   # Minimum replicas for high availability
+  maxReplicas: 10  # Maximum replicas for scaling capacity
+
+  # Scaling behavior configuration
+  behavior:
+    scaleUp:
+      # How quickly to scale up
+      stabilizationWindowSeconds: 60  # Wait 60s before scaling up to prevent flapping
+      policies:
+        - type: Percent
+          value: 50  # Add 50% more pods (but at least 1)
+          periodSeconds: 60
+        - type: Pods
+          value: 2  # Or add 2 pods
+          periodSeconds: 60
+      selectPolicy: Max  # Use the policy that scales up faster
+    scaleDown:
+      # How quickly to scale down
+      stabilizationWindowSeconds: 300  # Wait 5 minutes before scaling down for stability
+      policies:
+        - type: Percent
+          value: 10  # Remove 10% of pods
+          periodSeconds: 60
+        - type: Pods
+          value: 1  # Or remove 1 pod
+          periodSeconds: 60
+      selectPolicy: Min  # Use the policy that scales down slower (more conservative)
+
+  # Metrics for autoscaling
+  metrics:
+    # Primary metric: CPU utilization
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70  # Scale when average CPU usage exceeds 70%
+
+    # Secondary metric: Memory utilization (optional, commented out by default)
+    # Uncomment to enable memory-based scaling in addition to CPU
+    # - type: Resource
+    #   resource:
+    #     name: memory
+    #     target:
+    #       type: Utilization
+    #       averageUtilization: 80  # Scale when average memory usage exceeds 80%

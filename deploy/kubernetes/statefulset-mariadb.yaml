@@ -1,0 +1,185 @@
+---
+# Headless Service for MariaDB StatefulSet
+# Required for stable network identity
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-headless
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: database
+  annotations:
+    description: "Headless service for MariaDB StatefulSet stable network identity"
+spec:
+  type: ClusterIP
+  clusterIP: None  # Headless service
+  selector:
+    app: pece
+    component: database
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+
+---
+# MariaDB StatefulSet
+# Provides persistent database storage for Drupal
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: database
+  annotations:
+    description: "MariaDB database StatefulSet for PECE Drupal application"
+spec:
+  serviceName: mariadb-headless
+  replicas: 1  # Database should have single instance
+  selector:
+    matchLabels:
+      app: pece
+      component: database
+
+  # Pod template
+  template:
+    metadata:
+      labels:
+        app: pece
+        environment: production
+        project: pece-drupal
+        component: database
+    spec:
+      terminationGracePeriodSeconds: 30  # Allow graceful shutdown
+
+      # Security context for pod
+      securityContext:
+        fsGroup: 999  # MySQL group
+        runAsNonRoot: true
+
+      containers:
+        - name: mariadb
+          image: wodby/mariadb:11.4
+          imagePullPolicy: IfNotPresent
+
+          # Security context for container
+          securityContext:
+            runAsUser: 999  # MySQL user
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+                - DAC_OVERRIDE
+
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+
+          # Environment variables from ConfigMap and Secrets
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pece-secrets
+                  key: DB_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: pece-secrets
+                  key: DB_NAME
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pece-secrets
+                  key: DB_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pece-secrets
+                  key: DB_PASSWORD
+            - name: MYSQL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: DB_PORT
+
+          # Volume mounts
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /var/lib/mysql
+
+          # Resource limits and requests
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+
+          # Liveness probe - check if MariaDB is responsive
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+
+          # Readiness probe - check if MariaDB is ready to accept connections
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+
+  # Volume claim templates
+  # StatefulSet automatically creates PVCs for each replica
+  volumeClaimTemplates:
+    - metadata:
+        name: mariadb-data
+        labels:
+          app: pece
+          environment: production
+          project: pece-drupal
+          component: database
+        annotations:
+          description: "Persistent storage for MariaDB database files"
+      spec:
+        accessModes:
+          - ReadWriteOnce  # Single pod access
+        resources:
+          requests:
+            storage: 10Gi
+        # storageClassName: standard  # Uncomment and adjust based on your cluster's storage classes
+
+  # Update strategy
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0  # Update all pods

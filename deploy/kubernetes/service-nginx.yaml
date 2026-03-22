@@ -1,0 +1,31 @@
+---
+# Nginx Service (ClusterIP)
+# Provides stable endpoint for external access (via Ingress) to Nginx web server
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: nginx
+  annotations:
+    description: "ClusterIP service for Nginx web server access (via Ingress controller)"
+spec:
+  type: ClusterIP
+  # This is a regular ClusterIP service (not headless), so it gets a cluster IP
+  selector:
+    app: pece
+    component: nginx
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+  sessionAffinity: ClientIP  # Maintain session affinity for HTTP connections
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # 3 hours timeout for long-running requests

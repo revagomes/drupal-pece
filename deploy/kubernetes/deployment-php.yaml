@@ -1,0 +1,250 @@
+---
+# PHP-FPM Deployment
+# Processes PHP requests for Drupal application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: php-fpm
+  annotations:
+    description: "PHP-FPM deployment for PECE Drupal application"
+spec:
+  replicas: 2  # Can be scaled horizontally
+  selector:
+    matchLabels:
+      app: pece
+      component: php-fpm
+
+  # Deployment strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0  # Ensure zero downtime
+
+  # Pod template
+  template:
+    metadata:
+      labels:
+        app: pece
+        environment: production
+        project: pece-drupal
+        component: php-fpm
+      annotations:
+        description: "PHP-FPM container running Drupal application code"
+    spec:
+      terminationGracePeriodSeconds: 30  # Allow graceful shutdown
+
+      # Security context for pod
+      securityContext:
+        fsGroup: 82  # www-data group for wodby/drupal-php image
+        runAsNonRoot: true
+
+      containers:
+        - name: php-fpm
+          image: wodby/drupal-php:8.3
+          imagePullPolicy: IfNotPresent
+
+          # Security context for container
+          securityContext:
+            runAsUser: 82  # www-data user
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+                - DAC_OVERRIDE
+
+          ports:
+            - name: php-fpm
+              containerPort: 9000
+              protocol: TCP
+
+          # Environment variables from ConfigMap and Secrets
+          env:
+            # Database configuration (from Secrets)
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: pece-secrets
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pece-secrets
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pece-secrets
+                  key: DB_PASSWORD
+            - name: DB_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: DB_DRIVER
+
+            # PHP-FPM configuration
+            - name: PHP_FPM_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_FPM_USER
+            - name: PHP_FPM_GROUP
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_FPM_GROUP
+
+            # PHP configuration
+            - name: PHP_MEMORY_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_MEMORY_LIMIT
+            - name: PHP_MAX_EXECUTION_TIME
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_MAX_EXECUTION_TIME
+            - name: PHP_MAX_INPUT_TIME
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_MAX_INPUT_TIME
+            - name: PHP_POST_MAX_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_POST_MAX_SIZE
+            - name: PHP_UPLOAD_MAX_FILESIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_UPLOAD_MAX_FILESIZE
+
+            # PHP error reporting
+            - name: PHP_DISPLAY_ERRORS
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_DISPLAY_ERRORS
+            - name: PHP_DISPLAY_STARTUP_ERRORS
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_DISPLAY_STARTUP_ERRORS
+            - name: PHP_ERROR_REPORTING
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_ERROR_REPORTING
+
+            # PHP OPcache configuration
+            - name: PHP_OPCACHE_ENABLE
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_OPCACHE_ENABLE
+            - name: PHP_OPCACHE_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_OPCACHE_MEMORY
+            - name: PHP_OPCACHE_MAX_FILES
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_OPCACHE_MAX_FILES
+            - name: PHP_OPCACHE_VALIDATE_TIMESTAMPS
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_OPCACHE_VALIDATE_TIMESTAMPS
+            - name: PHP_OPCACHE_REVALIDATE_FREQ
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_OPCACHE_REVALIDATE_FREQ
+
+            # Mail configuration
+            - name: PHP_SENDMAIL_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: PHP_SENDMAIL_PATH
+
+            # Migration configuration
+            - name: MIGRATE_V1_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: MIGRATE_V1_URL
+
+            # Terminal configuration
+            - name: COLUMNS
+              valueFrom:
+                configMapKeyRef:
+                  name: pece-config
+                  key: COLUMNS
+
+          # Volume mounts
+          volumeMounts:
+            - name: drupal-files
+              mountPath: /var/www/html
+              subPath: drupal-code  # Store Drupal code in subdirectory
+
+          # Resource limits and requests
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+
+          # Liveness probe - check if PHP-FPM is responsive
+          livenessProbe:
+            tcpSocket:
+              port: php-fpm
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+
+          # Readiness probe - check if PHP-FPM is ready to accept requests
+          readinessProbe:
+            tcpSocket:
+              port: php-fpm
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+
+      # Volumes
+      volumes:
+        - name: drupal-files
+          persistentVolumeClaim:
+            claimName: drupal-files

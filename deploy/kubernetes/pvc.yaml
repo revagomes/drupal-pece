@@ -1,0 +1,49 @@
+---
+# PersistentVolumeClaim for Drupal files
+# Shared between PHP-FPM and Nginx containers
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: drupal-files
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: storage
+  annotations:
+    description: "Persistent storage for Drupal public and private files"
+    volume.beta.kubernetes.io/storage-class: "standard"
+spec:
+  accessModes:
+    - ReadWriteMany  # Allows multiple pods (PHP and Nginx) to mount this volume
+  resources:
+    requests:
+      storage: 20Gi
+  # storageClassName: standard  # Uncomment and adjust based on your cluster's storage classes
+
+---
+# PersistentVolumeClaim for MariaDB data
+# Exclusive to MariaDB StatefulSet
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-data
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: database
+  annotations:
+    description: "Persistent storage for MariaDB database files"
+    volume.beta.kubernetes.io/storage-class: "standard"
+spec:
+  accessModes:
+    - ReadWriteOnce  # Single pod access (MariaDB only)
+  resources:
+    requests:
+      storage: 10Gi
+  # storageClassName: standard  # Uncomment and adjust based on your cluster's storage classes

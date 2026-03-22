@@ -1,0 +1,204 @@
+#
+# Copy and rename this file to terraform.tfvars in this directory.
+# Update all values according to your environment before running:
+#   tofu init
+#   tofu plan -var-file=terraform.tfvars
+#   tofu apply -var-file=terraform.tfvars
+#
+
+# ==============================================================================
+# Project and Environment
+# ==============================================================================
+
+# Kubernetes namespace for PECE deployment
+namespace = "pece"
+
+# Deployment environment: dev, staging, or prod
+environment = "prod"
+
+# Project name used for resource labeling
+project_name = "pece"
+
+# ==============================================================================
+# Container Images
+# ==============================================================================
+
+# Container registry URL (leave empty for local registry)
+# Example: "registry.example.com" or "docker.io/youruser"
+container_registry = ""
+
+# PHP-FPM container image configuration
+php_image     = "pece-php"
+php_image_tag = "8.3"
+
+# Nginx container image configuration
+nginx_image     = "pece-nginx"
+nginx_image_tag = "1.25"
+
+# MariaDB container image configuration (from .env MARIADB_TAG)
+mariadb_image     = "mariadb"
+mariadb_image_tag = "10.9"
+
+# ==============================================================================
+# Replicas and Scaling
+# ==============================================================================
+
+# Number of pod replicas for each service
+php_replicas   = 2
+nginx_replicas = 2
+
+# Horizontal Pod Autoscaler configuration for PHP-FPM
+php_autoscaling_enabled       = true
+php_autoscaling_min_replicas  = 2
+php_autoscaling_max_replicas  = 10
+php_autoscaling_cpu_threshold = 70
+
+# ==============================================================================
+# Resource Limits - PHP-FPM
+# ==============================================================================
+
+php_cpu_request    = "500m"
+php_cpu_limit      = "2000m"
+php_memory_request = "512Mi"
+php_memory_limit   = "2Gi"
+
+# ==============================================================================
+# Resource Limits - Nginx
+# ==============================================================================
+
+nginx_cpu_request    = "100m"
+nginx_cpu_limit      = "500m"
+nginx_memory_request = "128Mi"
+nginx_memory_limit   = "512Mi"
+
+# ==============================================================================
+# Resource Limits - MariaDB
+# ==============================================================================
+
+mariadb_cpu_request    = "500m"
+mariadb_cpu_limit      = "2000m"
+mariadb_memory_request = "1Gi"
+mariadb_memory_limit   = "4Gi"
+
+# ==============================================================================
+# Database Configuration
+# ==============================================================================
+
+# Database credentials (from .env file)
+db_name = "drupal"
+db_user = "drupal"
+db_host = "mariadb"
+db_port = 3306
+
+# SENSITIVE: Database passwords - use strong random values in production
+# Generate with: openssl rand -base64 32
+db_password      = "CHANGE_ME_drupal_password"
+db_root_password = "CHANGE_ME_root_password"
+
+# ==============================================================================
+# Storage Configuration
+# ==============================================================================
+
+# Kubernetes storage class (depends on your cluster provider)
+# Common values: "standard", "gp2" (AWS), "pd-standard" (GCP), "managed-premium" (Azure)
+storage_class = "standard"
+
+# Persistent volume sizes
+drupal_files_storage_size = "10Gi"
+mariadb_storage_size      = "20Gi"
+
+# Access mode for Drupal files volume
+# Use "ReadWriteMany" for multi-replica deployments (requires NFS or similar)
+# Use "ReadWriteOnce" for single-replica or node-affinity setups
+drupal_files_access_mode = "ReadWriteMany"
+
+# ==============================================================================
+# Drupal Configuration
+# ==============================================================================
+
+# Drupal admin account (from .env DRUPAL_ACCOUNT_*)
+drupal_admin_username = "admin"
+drupal_admin_email    = "admin@example.com"
+
+# SENSITIVE: Drupal admin password - use strong password in production
+drupal_admin_password = "CHANGE_ME_admin_password"
+
+# SENSITIVE: Drupal hash salt for security
+# Generate with: openssl rand -hex 32
+drupal_hash_salt = "CHANGE_ME_GENERATE_64_CHAR_HEX_STRING"
+
+# Drupal trusted host patterns (regex list for security)
+# Example: ["^pece\\.example\\.com$", "^www\\.pece\\.example\\.com$"]
+drupal_trusted_host_patterns = []
+
+# Site language (from .env SITE_LANGUAGE)
+site_language = "English"
+
+# ==============================================================================
+# Networking Configuration
+# ==============================================================================
+
+# Primary domain name for the application (from .env PROJECT_BASE_URL)
+# REQUIRED: Update this to your actual domain
+domain = "pece.example.com"
+
+# Ingress configuration
+ingress_enabled = true
+ingress_class   = "nginx"
+
+# Additional Ingress annotations (optional)
+# Example for cert-manager:
+# ingress_annotations = {
+#   "cert-manager.io/cluster-issuer" = "letsencrypt-prod"
+#   "nginx.ingress.kubernetes.io/proxy-body-size" = "100m"
+# }
+ingress_annotations = {}
+
+# TLS/SSL configuration
+tls_enabled     = true
+tls_secret_name = "pece-tls"
+
+# ==============================================================================
+# Optional Services
+# ==============================================================================
+
+# Redis cache service (from .env REDIS_TAG)
+redis_enabled   = false
+redis_image_tag = "7"
+
+# Solr search service (from .env SOLR_TAG and SOLR_CONFIG_SET)
+solr_enabled    = false
+solr_image_tag  = "8"
+solr_config_set = "search_api_solr_8.x-2.7"
+
+# ==============================================================================
+# Labels and Annotations
+# ==============================================================================
+
+# Common labels applied to all Kubernetes resources
+common_labels = {
+  app        = "pece"
+  managed-by = "opentofu"
+  project    = "pece"
+  tier       = "production"
+}
+
+# Common annotations applied to all Kubernetes resources
+common_annotations = {}
+
+# ==============================================================================
+# Feature Flags
+# ==============================================================================
+
+# Enable init container for database migration and Drupal setup
+enable_init_container = true
+
+# Enable liveness and readiness probes for health monitoring
+enable_health_checks = true
+
+# Enable Kubernetes network policies for enhanced security
+# Note: Requires network policy support in your cluster (e.g., Calico, Cilium)
+enable_network_policies = false
+
+# Enable debug mode with verbose logging (disable in production)
+debug_mode = false

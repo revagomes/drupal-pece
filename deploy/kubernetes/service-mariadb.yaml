@@ -1,0 +1,31 @@
+---
+# MariaDB Service (ClusterIP)
+# Provides stable endpoint for applications to connect to MariaDB
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  namespace: pece
+  labels:
+    app: pece
+    environment: production
+    project: pece-drupal
+    managed-by: kubectl
+    component: database
+  annotations:
+    description: "ClusterIP service for MariaDB database access by applications (PHP-FPM)"
+spec:
+  type: ClusterIP
+  # This is a regular ClusterIP service (not headless), so it gets a cluster IP
+  selector:
+    app: pece
+    component: database
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+  sessionAffinity: ClientIP  # Maintain session affinity for database connections
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600  # 1 hour timeout
