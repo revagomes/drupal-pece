@@ -1,0 +1,89 @@
+services:
+
+  # ---------------------------------------------------------------------------
+  # PHP-FPM — Drupal application
+  # ---------------------------------------------------------------------------
+  php:
+    image: ${PHP_IMAGE:-ghcr.io/pece-project/drupal-pece/php:latest}
+    restart: unless-stopped
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-drupal}
+      DB_USER: ${DB_USER:-drupal}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DRUPAL_TRUSTED_HOST: ${DRUPAL_TRUSTED_HOST:-}
+    volumes:
+      - drupal_files:/var/www/html/web/sites/default/files
+    networks:
+      - internal
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "SCRIPT_NAME=/fpm-ping SCRIPT_FILENAME=/fpm-ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # Nginx — serves static files, proxies PHP-FPM
+  # Bound to host port 8080 so Easypanel's Traefik can route to it.
+  # Do NOT change to 80/443 — those are managed by Easypanel.
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: ${NGINX_IMAGE:-ghcr.io/pece-project/drupal-pece/nginx:latest}
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - drupal_files:/var/www/html/web/sites/default/files:ro
+    networks:
+      - internal
+    depends_on:
+      php:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # MariaDB 11.4 — database
+  # Named volume ensures data persists across restarts and deploys.
+  # ---------------------------------------------------------------------------
+  mariadb:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME:-drupal}
+      MARIADB_USER: ${DB_USER:-drupal}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+
+# -----------------------------------------------------------------------------
+# Volumes — named volumes survive restarts; never removed by deploy scripts
+# -----------------------------------------------------------------------------
+volumes:
+  mariadb_data:
+  drupal_files:
+
+# -----------------------------------------------------------------------------
+# Networks — internal bridge; nginx exposed only via host port 8080
+# -----------------------------------------------------------------------------
+networks:
+  internal:
+    driver: bridge
