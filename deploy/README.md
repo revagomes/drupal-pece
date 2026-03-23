@@ -1,788 +1,260 @@
-# PECE Kubernetes Deployment Guide
+# PECE Deployment Guide
 
-This directory contains production-grade deployment infrastructure for PECE using OpenTofu, Kubernetes, and Podman.
+This directory contains production deployment infrastructure for PECE v2.x. Two deployment targets are supported:
 
-## Overview
+| | Docker Compose + Easypanel | Kubernetes (K3s) |
+|---|---|---|
+| **Target** | VPS 1 (Ubuntu 22.04, Docker CE 29.3) | VPS 2 (future — needs OS upgrade) |
+| **Status** | ✅ Active PoC | 🔜 Future |
+| **Reverse proxy** | Easypanel's Traefik (managed) | Ingress controller |
+| **Orchestration** | `docker compose` | `kubectl` / K3s |
+| **Image registry** | GHCR | GHCR |
+| **IaC** | Scripts + Makefile | OpenTofu + Makefile |
 
-This deployment setup provides:
-
-- **Container Images**: Production-optimized PHP-FPM and Nginx containers built with Podman
-- **Infrastructure as Code**: OpenTofu modules for Kubernetes cluster provisioning
-- **Kubernetes Manifests**: Complete K8s resource definitions (Deployments, Services, StatefulSets, Ingress, etc.)
-- **Automation Scripts**: Build, deploy, and rollback automation
-- **Configuration Management**: Environment-based configuration with ConfigMaps and Secrets
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                     Ingress (HTTPS)                      │
-│                   pece.example.com                       │
-└────────────────────┬────────────────────────────────────┘
-                     │
-         ┌───────────▼───────────┐
-         │   Nginx Service       │
-         │   (LoadBalancer)      │
-         └───────────┬───────────┘
-                     │
-    ┌────────────────┼────────────────┐
-    │                │                │
-┌───▼───┐        ┌───▼───┐       ┌───▼───┐
-│ Nginx │        │ Nginx │       │ Nginx │
-│  Pod  │        │  Pod  │       │  Pod  │
-└───┬───┘        └───┬───┘       └───┬───┘
-    │                │                │
-    └────────────────┼────────────────┘
-                     │
-         ┌───────────▼───────────┐
-         │   PHP-FPM Service     │
-         │   (ClusterIP)         │
-         └───────────┬───────────┘
-                     │
-    ┌────────────────┼────────────────┐
-    │                │                │
-┌───▼───┐        ┌───▼───┐       ┌───▼───┐
-│  PHP  │        │  PHP  │       │  PHP  │
-│  Pod  │        │  Pod  │       │  Pod  │
-└───┬───┘        └───┬───┘       └───┬───┘
-    │                │                │
-    └────────────────┼────────────────┘
-                     │
-         ┌───────────▼───────────┐
-         │  MariaDB Service      │
-         │   (ClusterIP)         │
-         └───────────┬───────────┘
-                     │
-                ┌────▼────┐
-                │ MariaDB │
-                │StatefulSet│
-                └─────────┘
-```
+---
 
 ## Directory Structure
 
 ```
 deploy/
-├── README.md                      # This file
-├── Makefile                       # Main build and deployment automation
-├── containerfiles/                # Container image definitions
-│   ├── Containerfile.php         # PHP-FPM production image
-│   └── Containerfile.nginx       # Nginx production image
-├── opentofu/                      # Infrastructure as Code
-│   ├── main.tf                   # Main OpenTofu configuration
-│   ├── variables.tf              # Input variables
-│   ├── outputs.tf                # Output values
-│   ├── versions.tf               # Provider version constraints
-│   └── modules/                  # Reusable modules
-│       └── kubernetes/           # Kubernetes cluster module
-│           └── main.tf
-├── kubernetes/                    # Kubernetes manifests
-│   ├── namespace.yaml            # Namespace definition
-│   ├── configmap.yaml            # Drupal configuration
-│   ├── secrets.yaml              # Database credentials (template)
-│   ├── pvc.yaml                  # Persistent volume claims
-│   ├── deployment-php.yaml       # PHP-FPM deployment
-│   ├── deployment-nginx.yaml     # Nginx deployment
-│   ├── statefulset-mariadb.yaml  # MariaDB StatefulSet
-│   ├── service-php.yaml          # PHP-FPM service
-│   ├── service-nginx.yaml        # Nginx service
-│   ├── service-mariadb.yaml      # MariaDB service
-│   ├── ingress.yaml              # Ingress resource
-│   └── hpa.yaml                  # Horizontal Pod Autoscaler
-└── scripts/                       # Automation scripts
-    ├── build.sh                  # Container image build script
-    ├── deploy.sh                 # Kubernetes deployment script
-    └── rollback.sh               # Rollback script
+├── README.md                         # This file
+├── Makefile                          # Deployment automation
+├── containerfiles/                   # Shared container image definitions
+│   ├── Containerfile.php            # PHP-FPM production image
+│   ├── Containerfile.nginx          # Nginx production image
+│   └── nginx.conf                   # Nginx configuration (baked into image)
+├── docker-compose/                   # VPS 1 — Docker Compose + Easypanel
+│   ├── docker-compose.yml           # Production stack
+│   └── .env.example                 # Environment variable template
+├── kubernetes/                       # VPS 2 — Kubernetes (future)
+│   ├── namespace.yaml
+│   ├── configmap.yaml
+│   ├── secrets.yaml
+│   ├── pvc.yaml
+│   ├── deployment-php.yaml
+│   ├── deployment-nginx.yaml
+│   ├── statefulset-mariadb.yaml
+│   ├── service-{php,nginx,mariadb}.yaml
+│   ├── ingress.yaml
+│   └── hpa.yaml
+├── opentofu/                         # Infrastructure as Code (K8s target)
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   ├── versions.tf
+│   └── modules/kubernetes/
+└── scripts/
+    ├── build.sh                     # Container image build (both targets)
+    ├── deploy-compose.sh            # Deploy via Docker Compose to VPS 1
+    ├── rollback-compose.sh          # Rollback Docker Compose deployment
+    ├── deploy-k8s.sh                # Deploy to Kubernetes cluster
+    └── rollback-k8s.sh              # Rollback Kubernetes deployment
 ```
 
-## Prerequisites
+---
 
-### Required Tools
+## Target 1: Docker Compose + Easypanel (VPS 1)
 
-You must have the following tools installed:
+### Architecture
 
-```bash
-# Container engine
-podman --version     # >= 4.0 (or docker >= 24.0)
-
-# Infrastructure provisioning
-tofu --version       # >= 1.6 (OpenTofu)
-
-# Kubernetes CLI
-kubectl version      # >= 1.28
-
-# Optional but recommended
-helm version         # >= 3.0
+```
+Internet → Easypanel Traefik (port 80/443) → localhost:8080 → Nginx → PHP-FPM → MariaDB
 ```
 
-### Installation
+Nginx binds to host port **8080** only. Easypanel's Traefik handles TLS termination and domain routing — no second reverse proxy is needed or started.
 
-**macOS (Homebrew):**
+### VPS 1 Prerequisites
+
+1. **Docker CE ≥ 24** and **Docker Compose v2** installed
+2. **Easypanel** running (manages Traefik on ports 80/443)
+3. Deploy directory created:
+   ```bash
+   mkdir -p /opt/pece2
+   ```
+4. **SSH deploy key** added to `~/.ssh/authorized_keys` on the VPS:
+   ```bash
+   # On your local machine — generate a dedicated key (no passphrase)
+   ssh-keygen -t ed25519 -f ~/.ssh/pece_deploy -N ""
+   # Add the public key to the VPS
+   ssh-copy-id -i ~/.ssh/pece_deploy.pub user@your-vps
+   ```
+5. **Easypanel custom app** pointing to `localhost:8080` with your domain — this lets Traefik route traffic and issue a TLS certificate automatically.
+
+### GitHub Actions Secrets
+
+Add these secrets in **GitHub → Repository → Settings → Secrets → Actions**:
+
+| Secret | Description | Example |
+|--------|-------------|---------|
+| `VPS_HOST` | VPS IP or hostname | `1.2.3.4` |
+| `VPS_USER` | SSH user | `deploy` |
+| `VPS_SSH_KEY` | Private SSH key (ed25519, no passphrase) | Contents of `~/.ssh/pece_deploy` |
+| `VPS_DEPLOY_PATH` | Deploy directory on VPS | `/opt/pece2` |
+| `DB_PASSWORD` | MariaDB application user password | Generated strong password |
+| `DB_ROOT_PASSWORD` | MariaDB root password | Generated strong password |
+| `DRUPAL_TRUSTED_HOST` | Drupal trusted host pattern (regex) | `^pece\.example\.com$` |
+| `DB_NAME` | Database name (optional, default: `drupal`) | `drupal` |
+| `DB_USER` | Database user (optional, default: `drupal`) | `drupal` |
+
+### Automated Deployment (GitHub Actions)
+
+Push to `feature/k8s-do-deployment` to trigger the deploy workflow:
+
 ```bash
-brew install podman opentofu kubectl helm
+git push origin feature/k8s-do-deployment
 ```
 
-**Linux (Debian/Ubuntu):**
+The workflow (`.github/workflows/deploy.yml`):
+1. Builds PHP and Nginx images from `deploy/containerfiles/`
+2. Pushes to GHCR with `latest` and `sha-<short>` tags
+3. SSHs into VPS 1, writes `.env`, copies `docker-compose.yml`
+4. Runs `docker compose pull && docker compose up -d`
+
+### Manual Deployment
+
 ```bash
-# Podman
-sudo apt-get update
-sudo apt-get install -y podman
+# Set required environment variables
+export VPS_HOST=1.2.3.4
+export VPS_USER=deploy
+export VPS_SSH_KEY=~/.ssh/pece_deploy
+export VPS_DEPLOY_PATH=/opt/pece2
+export DB_PASSWORD=your_db_password
+export DB_ROOT_PASSWORD=your_root_password
+export DRUPAL_TRUSTED_HOST='^pece\.example\.com$'
 
-# OpenTofu
-curl -Lo /tmp/opentofu.deb https://get.opentofu.org/opentofu/1.6.0/deb/opentofu_1.6.0_amd64.deb
-sudo dpkg -i /tmp/opentofu.deb
+# Deploy
+make compose-deploy
 
-# kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-# Helm
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# Or directly via script
+cd deploy && ./scripts/deploy-compose.sh
 ```
 
-### Kubernetes Cluster
-
-You need access to a Kubernetes cluster. Options include:
-
-- **Local Development**: [Minikube](https://minikube.sigs.k8s.io/), [Kind](https://kind.sigs.k8s.io/), [k3s](https://k3s.io/)
-- **Cloud Providers**: GKE, EKS, AKS, DigitalOcean Kubernetes
-- **Self-Hosted**: Kubeadm, Rancher, OpenShift
-
-Ensure your `kubectl` is configured to access the cluster:
+### Rollback
 
 ```bash
-kubectl cluster-info
-kubectl get nodes
+# Rollback to a specific image tag (shown in GitHub Actions run logs)
+make compose-rollback TAG=sha-abc1234
+
+# Or via script
+cd deploy && ./scripts/rollback-compose.sh --tag sha-abc1234
 ```
 
-## Quick Start
+### Makefile Targets (Docker Compose)
 
-### 1. Set Environment Variables
+| Target | Description |
+|--------|-------------|
+| `make compose-deploy` | Deploy to VPS 1 |
+| `make compose-rollback TAG=sha-<short>` | Rollback to previous image tag |
+| `make compose-status VPS_HOST=... VPS_USER=... VPS_SSH_KEY=...` | Show running services |
+| `make compose-logs VPS_HOST=... VPS_USER=... VPS_SSH_KEY=...` | Tail service logs |
 
-Create a `.env` file or export variables:
+### First-Time Drupal Install
+
+After a successful deploy, run the Drupal site install from inside the PHP container on the VPS:
 
 ```bash
-export CONTAINER_REGISTRY=registry.example.com
-export REGISTRY_USERNAME=your-username
-export REGISTRY_PASSWORD=your-password
-export IMAGE_TAG=v1.0.0
-export DB_ROOT_PASSWORD=$(openssl rand -base64 32)
-export DB_PASSWORD=$(openssl rand -base64 32)
-export DRUPAL_HASH_SALT=$(openssl rand -base64 48)
+ssh -i ~/.ssh/pece_deploy deploy@your-vps
+cd /opt/pece2
+
+# Install Drupal with PECE profile
+docker compose exec php vendor/bin/drush si pece \
+  --site-name="PECE" \
+  -y
+
+# Clear caches
+docker compose exec php vendor/bin/drush cr
 ```
 
-### 2. Build Container Images
+---
 
-```bash
-cd deploy
-make build IMAGE_TAG=v1.0.0
+## Target 2: Kubernetes (VPS 2 — Future)
+
+VPS 2 requires an OS upgrade from kernel 3.13 to Ubuntu 22.04 before K3s can be installed. The manifests are ready and will remain untouched until then.
+
+### Architecture
+
+```
+Internet → Ingress Controller → Nginx Service → PHP-FPM Service → MariaDB StatefulSet
 ```
 
-This builds:
-- `pece-php:v1.0.0` - PHP-FPM with Drupal dependencies
-- `pece-nginx:v1.0.0` - Nginx with Drupal-optimized configuration
+### Prerequisites
 
-### 3. Push Images to Registry
+- K3s or Kubernetes ≥ 1.28 cluster
+- `kubectl` configured
+- OpenTofu ≥ 1.6
 
-```bash
-make push CONTAINER_REGISTRY=registry.example.com IMAGE_TAG=v1.0.0
-```
-
-### 4. Provision Infrastructure with OpenTofu
+### Quick Start
 
 ```bash
-cd opentofu
-
-# Initialize OpenTofu
+# 1. Provision infrastructure with OpenTofu
+cd deploy/opentofu
 tofu init
-
-# Review planned changes
 tofu plan -var-file=production.tfvars
-
-# Apply infrastructure
 tofu apply -var-file=production.tfvars
-```
 
-### 5. Deploy to Kubernetes
-
-```bash
-cd deploy
-
-# Deploy all resources
-make deploy ENV=production IMAGE_TAG=v1.0.0
-
-# Check deployment status
-make status
-```
-
-### 6. Access the Site
-
-```bash
-# Get the ingress URL
-kubectl get ingress -n pece
-
-# Or port-forward for testing
-kubectl port-forward -n pece svc/nginx 8080:80
-# Visit http://localhost:8080
-```
-
-## Building Container Images
-
-### Build All Images
-
-```bash
-make build
-```
-
-### Build Specific Images
-
-```bash
-# PHP-FPM only
-make build-php IMAGE_TAG=v1.0.1
-
-# Nginx only
-make build-nginx IMAGE_TAG=v1.0.1
-```
-
-### Build with Custom Registry
-
-```bash
-make build CONTAINER_REGISTRY=registry.example.com IMAGE_TAG=v1.0.2
-```
-
-### Image Details
-
-**PHP-FPM Image (`pece-php`)**
-- Base: `php:8.3-fpm-alpine`
-- Includes: Composer dependencies, Drupal core, PECE profile
-- Non-root user: `www-data` (UID 82)
-- Health check: `/health` endpoint via `drush status`
-
-**Nginx Image (`pece-nginx`)**
-- Base: `nginx:1.25-alpine`
-- Configuration: Drupal-optimized with FastCGI caching
-- Non-root user: `nginx` (UID 101)
-- Health check: HTTP 200 on `/nginx-health`
-
-## Infrastructure Provisioning with OpenTofu
-
-### Initialize OpenTofu
-
-```bash
-cd opentofu
-tofu init
-```
-
-### Create Variable File
-
-Create `opentofu/production.tfvars`:
-
-```hcl
-# Cluster configuration
-cluster_name = "pece-prod"
-cluster_region = "us-east-1"
-kubernetes_version = "1.28"
-
-# Node pools
-node_pools = {
-  default = {
-    size = "s-2vcpu-4gb"
-    min_nodes = 2
-    max_nodes = 5
-  }
-}
-
-# Networking
-vpc_cidr = "10.0.0.0/16"
-enable_private_cluster = true
-
-# Storage
-storage_class = "do-block-storage"
-```
-
-### Plan and Apply
-
-```bash
-# Preview changes
-tofu plan -var-file=production.tfvars -out=plan.out
-
-# Apply changes
-tofu apply plan.out
-```
-
-### Verify Infrastructure
-
-```bash
-# Get kubeconfig
-tofu output -raw kubeconfig > ~/.kube/pece-prod-config
-export KUBECONFIG=~/.kube/pece-prod-config
-
-# Verify cluster access
-kubectl get nodes
-```
-
-## Kubernetes Deployment
-
-### Configure Secrets
-
-**IMPORTANT**: Never commit real secrets to version control.
-
-Create secrets file from template:
-
-```bash
+# 2. Configure secrets (never commit real values)
 cd deploy/kubernetes
-
-# Copy template
 cp secrets.yaml secrets.local.yaml
-
-# Edit with real credentials
-# DO NOT commit secrets.local.yaml
-```
-
-Edit `secrets.local.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: pece-secrets
-  namespace: pece
-type: Opaque
-stringData:
-  DB_ROOT_PASSWORD: "YOUR_GENERATED_PASSWORD"
-  DB_PASSWORD: "YOUR_GENERATED_PASSWORD"
-  DRUPAL_HASH_SALT: "YOUR_GENERATED_SALT"
-```
-
-Apply secrets:
-
-```bash
+# Edit secrets.local.yaml with real credentials
 kubectl apply -f secrets.local.yaml
+
+# 3. Deploy
+make k8s-deploy ENV=production
 ```
 
-### Deploy Application
+### Makefile Targets (Kubernetes)
 
-Using Makefile (recommended):
+| Target | Description |
+|--------|-------------|
+| `make k8s-build` | Build container images |
+| `make k8s-deploy` | Deploy to Kubernetes cluster |
+| `make k8s-rollback` | Rollback to previous version |
+| `make k8s-status` | Show deployment status |
+| `make k8s-logs` | View deployment logs |
+
+---
+
+## Container Images
+
+Both targets use the same images built from `deploy/containerfiles/`.
+
+**PHP-FPM (`pece/php`)**
+- Base: `php:8.3-fpm-bookworm` (multi-stage build)
+- Includes Composer dependencies, Drupal core, PECE profile
+- Runs as `www-data` (non-root)
+- PHP-FPM on port 9000
+
+**Nginx (`pece/nginx`)**
+- Base: `nginx:1.25-alpine`
+- Drupal-optimized FastCGI configuration
+- Upstream: `php:9000` (matches service name in both compose and K8s)
+- HTTP on port 80 (host-mapped to 8080 in compose)
+
+### Build Images Manually
 
 ```bash
-make deploy ENV=production IMAGE_TAG=v1.0.0
+# Build all images (uses podman by default, set BUILD_ENGINE=docker to use Docker)
+cd deploy
+make build BUILD_ENGINE=docker IMAGE_TAG=v1.0.0
+
+# Build and push to GHCR
+make push CONTAINER_REGISTRY=ghcr.io/pece-project/drupal-pece IMAGE_TAG=v1.0.0
 ```
 
-Or manually:
-
-```bash
-cd deploy/kubernetes
-
-# Apply in order
-kubectl apply -f namespace.yaml
-kubectl apply -f secrets.yaml
-kubectl apply -f configmap.yaml
-kubectl apply -f pvc.yaml
-kubectl apply -f statefulset-mariadb.yaml
-kubectl apply -f service-mariadb.yaml
-kubectl apply -f deployment-php.yaml
-kubectl apply -f service-php.yaml
-kubectl apply -f deployment-nginx.yaml
-kubectl apply -f service-nginx.yaml
-kubectl apply -f ingress.yaml
-kubectl apply -f hpa.yaml
-```
-
-### Verify Deployment
-
-```bash
-# Check pod status
-kubectl get pods -n pece
-
-# Check services
-kubectl get svc -n pece
-
-# Check ingress
-kubectl get ingress -n pece
-
-# View logs
-kubectl logs -n pece -l app=pece-php --tail=50
-kubectl logs -n pece -l app=pece-nginx --tail=50
-
-# Check Drupal status
-kubectl exec -n pece -it deployment/pece-php -- drush status
-```
-
-### Initialize Drupal
-
-For a fresh deployment, initialize the Drupal site:
-
-```bash
-# Get a shell in the PHP pod
-kubectl exec -n pece -it deployment/pece-php -- bash
-
-# Inside the pod
-cd /var/www/html
-composer install --no-dev
-drush -y si pece --existing-config \
-  --account-name=admin \
-  --account-pass=YOUR_ADMIN_PASSWORD
-
-# Import essential content
-drush content:import ../content/essential/
-
-# Exit the pod
-exit
-```
-
-## Configuration Management
-
-### ConfigMaps
-
-Drupal configuration is managed via `kubernetes/configmap.yaml`:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pece-config
-  namespace: pece
-data:
-  NGINX_BACKEND_HOST: "pece-php"
-  NGINX_SERVER_ROOT: "/var/www/html/web"
-  NGINX_VHOST_PRESET: "drupal10"
-  DB_HOST: "pece-mariadb"
-  DB_NAME: "drupal"
-  DB_USER: "drupal"
-  DB_DRIVER: "mysql"
-  DB_PORT: "3306"
-```
-
-Update configuration:
-
-```bash
-# Edit configmap.yaml
-kubectl apply -f kubernetes/configmap.yaml
-
-# Restart pods to pick up changes
-kubectl rollout restart deployment/pece-php -n pece
-kubectl rollout restart deployment/pece-nginx -n pece
-```
-
-### Secrets
-
-Manage sensitive data with Kubernetes Secrets:
-
-```bash
-# Create or update secret
-kubectl create secret generic pece-secrets \
-  --from-literal=DB_PASSWORD=$(openssl rand -base64 32) \
-  --from-literal=DRUPAL_HASH_SALT=$(openssl rand -base64 48) \
-  --dry-run=client -o yaml | kubectl apply -f -
-
-# View secret keys (not values)
-kubectl get secret pece-secrets -n pece -o jsonpath='{.data}'
-
-# Decode a secret value (for debugging)
-kubectl get secret pece-secrets -n pece -o jsonpath='{.data.DB_PASSWORD}' | base64 -d
-```
-
-## Rollback Procedures
-
-### Automated Rollback
-
-```bash
-# Rollback to previous deployment
-make rollback
-
-# Or manually
-./scripts/rollback.sh
-```
-
-### Manual Rollback
-
-```bash
-# View rollout history
-kubectl rollout history deployment/pece-php -n pece
-kubectl rollout history deployment/pece-nginx -n pece
-
-# Rollback to previous revision
-kubectl rollout undo deployment/pece-php -n pece
-kubectl rollout undo deployment/pece-nginx -n pece
-
-# Rollback to specific revision
-kubectl rollout undo deployment/pece-php -n pece --to-revision=3
-```
-
-### Database Rollback
-
-**CRITICAL**: Always backup the database before deployments.
-
-```bash
-# Backup before deployment
-kubectl exec -n pece -it statefulset/pece-mariadb -- \
-  mysqldump -u root -p$DB_ROOT_PASSWORD drupal > backup-$(date +%Y%m%d-%H%M%S).sql
-
-# Restore from backup
-kubectl exec -n pece -i statefulset/pece-mariadb -- \
-  mysql -u root -p$DB_ROOT_PASSWORD drupal < backup-20240213-120000.sql
-```
-
-## Scaling
-
-### Manual Scaling
-
-```bash
-# Scale PHP-FPM pods
-kubectl scale deployment/pece-php -n pece --replicas=5
-
-# Scale Nginx pods
-kubectl scale deployment/pece-nginx -n pece --replicas=3
-```
-
-### Horizontal Pod Autoscaler (HPA)
-
-HPA is configured in `kubernetes/hpa.yaml`:
-
-```bash
-# View HPA status
-kubectl get hpa -n pece
-
-# Update HPA configuration
-kubectl apply -f kubernetes/hpa.yaml
-```
-
-The HPA automatically scales based on:
-- CPU utilization (target: 70%)
-- Memory utilization (target: 80%)
-- Min replicas: 2
-- Max replicas: 10
-
-## Monitoring and Logs
-
-### View Logs
-
-```bash
-# PHP-FPM logs
-kubectl logs -n pece -l app=pece-php --tail=100 -f
-
-# Nginx logs
-kubectl logs -n pece -l app=pece-nginx --tail=100 -f
-
-# MariaDB logs
-kubectl logs -n pece statefulset/pece-mariadb --tail=100 -f
-
-# All pods
-kubectl logs -n pece --all-containers=true --tail=100 -f
-```
-
-### Shell Access
-
-```bash
-# PHP-FPM pod
-make shell-php
-# Or manually:
-kubectl exec -n pece -it deployment/pece-php -- bash
-
-# Nginx pod
-make shell-nginx
-# Or manually:
-kubectl exec -n pece -it deployment/pece-nginx -- sh
-
-# MariaDB pod
-make shell-mariadb
-# Or manually:
-kubectl exec -n pece -it statefulset/pece-mariadb -- bash
-```
-
-### Health Checks
-
-```bash
-# Check pod health
-kubectl get pods -n pece
-
-# Describe pod for detailed events
-kubectl describe pod -n pece <pod-name>
-
-# Check readiness/liveness probes
-kubectl get events -n pece --field-selector involvedObject.kind=Pod
-```
-
-## Troubleshooting
-
-### Pods Not Starting
-
-```bash
-# Check pod status and events
-kubectl get pods -n pece
-kubectl describe pod -n pece <pod-name>
-
-# Common issues:
-# 1. Image pull errors - verify CONTAINER_REGISTRY and credentials
-# 2. Resource limits - check node capacity
-# 3. PVC binding - verify storage class exists
-```
-
-### Database Connection Failures
-
-```bash
-# Verify MariaDB is running
-kubectl get pods -n pece -l app=pece-mariadb
-
-# Check service endpoints
-kubectl get endpoints -n pece pece-mariadb
-
-# Test connection from PHP pod
-kubectl exec -n pece -it deployment/pece-php -- \
-  mysql -h pece-mariadb -u drupal -p$DB_PASSWORD -e "SELECT 1"
-```
-
-### Ingress Not Working
-
-```bash
-# Check ingress status
-kubectl get ingress -n pece
-kubectl describe ingress -n pece pece-ingress
-
-# Verify ingress controller is installed
-kubectl get pods -n ingress-nginx
-
-# Check service endpoints
-kubectl get endpoints -n pece pece-nginx
-```
-
-### Performance Issues
-
-```bash
-# Check resource usage
-kubectl top pods -n pece
-kubectl top nodes
-
-# Check HPA status
-kubectl get hpa -n pece
-
-# View resource limits
-kubectl describe deployment/pece-php -n pece | grep -A 5 Limits
-```
-
-### Persistent Storage Issues
-
-```bash
-# Check PVC status
-kubectl get pvc -n pece
-
-# Describe PVC
-kubectl describe pvc -n pece pece-files
-
-# Verify storage class
-kubectl get storageclass
-```
-
-## Maintenance
-
-### Update Container Images
-
-```bash
-# Build new images
-make build IMAGE_TAG=v1.1.0
-
-# Push to registry
-make push IMAGE_TAG=v1.1.0
-
-# Update deployment with new images
-kubectl set image deployment/pece-php -n pece \
-  php=registry.example.com/pece-php:v1.1.0
-
-kubectl set image deployment/pece-nginx -n pece \
-  nginx=registry.example.com/pece-nginx:v1.1.0
-
-# Monitor rollout
-kubectl rollout status deployment/pece-php -n pece
-kubectl rollout status deployment/pece-nginx -n pece
-```
-
-### Update Drupal Core and Modules
-
-```bash
-# Get shell in PHP pod
-kubectl exec -n pece -it deployment/pece-php -- bash
-
-# Inside pod
-cd /var/www/html
-composer update
-drush -y updb
-drush -y cex
-
-# Exit and copy updated config
-exit
-
-# Copy config from pod to local
-kubectl cp pece/pece-php-xxxx:/var/www/html/config ./config
-
-# Commit config changes
-git add config/
-git commit -m "Update Drupal core and contrib modules"
-```
-
-### Backup Strategy
-
-**Database Backups:**
-```bash
-# Manual backup
-kubectl exec -n pece -it statefulset/pece-mariadb -- \
-  mysqldump -u root -p$DB_ROOT_PASSWORD drupal | \
-  gzip > backup-$(date +%Y%m%d-%H%M%S).sql.gz
-
-# Automated with CronJob (create kubernetes/cronjob-backup.yaml)
-kubectl apply -f kubernetes/cronjob-backup.yaml
-```
-
-**File Backups:**
-```bash
-# Backup files directory
-kubectl cp pece/pece-php-xxxx:/var/www/html/web/sites/default/files \
-  ./backups/files-$(date +%Y%m%d-%H%M%S)
-```
-
-## Environment Variables Reference
-
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `CONTAINER_REGISTRY` | No | Container registry URL | `registry.example.com` |
-| `REGISTRY_USERNAME` | If using registry | Registry username | `admin` |
-| `REGISTRY_PASSWORD` | If using registry | Registry password | `*****` |
-| `IMAGE_TAG` | No | Container image tag | `v1.0.0` (default: `latest`) |
-| `ENV` | No | Environment name | `production`, `staging` |
-| `NAMESPACE` | No | Kubernetes namespace | `pece` (default) |
-| `DB_ROOT_PASSWORD` | Yes | MariaDB root password | Generate with `openssl rand -base64 32` |
-| `DB_PASSWORD` | Yes | Drupal database password | Generate with `openssl rand -base64 32` |
-| `DRUPAL_HASH_SALT` | Yes | Drupal hash salt | Generate with `openssl rand -base64 48` |
-| `KUBECONFIG` | No | Kubernetes config file | `~/.kube/config` |
-
-## Security Best Practices
-
-1. **Never commit secrets** - Use `secrets.local.yaml` (gitignored)
-2. **Run as non-root** - All containers use unprivileged users
-3. **Use network policies** - Restrict pod-to-pod communication
-4. **Scan images** - Run `trivy image <image>` before deployment
-5. **Enable RBAC** - Use service accounts with minimal permissions
-6. **Use TLS** - Configure Ingress with valid SSL certificates
-7. **Rotate secrets** - Regularly update database passwords and hash salts
-8. **Resource limits** - Set CPU/memory limits on all containers
-9. **Read-only root filesystem** - Where possible, use `readOnlyRootFilesystem: true`
-10. **Keep images updated** - Regularly rebuild with latest base images
+---
+
+## Security Notes
+
+- **Never commit secrets** — use `.env` files (gitignored) or GitHub Actions secrets
+- **SSH deploy key** should be a dedicated ed25519 key, no passphrase, restricted to the VPS
+- **Rotate credentials** regularly — DB passwords and Drupal hash salt
+- **MariaDB** is on the internal Docker network only — not exposed to the host
+- **`docker compose down -v` is never called** by deploy/rollback scripts — named volumes are preserved
 
 ## Additional Resources
 
-- [PECE Project Documentation](https://pece-project.github.io/drupal-pece/)
-- [Kubernetes Documentation](https://kubernetes.io/docs/)
-- [OpenTofu Documentation](https://opentofu.org/docs/)
-- [Podman Documentation](https://docs.podman.io/)
-- [Drupal Docker Documentation](https://www.drupal.org/docs/develop/local-server-setup/docker-development-environments)
-
-## Support
-
-For issues and questions:
-
-- GitHub Issues: [PECE Project Issues](https://github.com/PECE-project/drupal-pece/issues)
-- Documentation: [PECE Documentation](https://pece-project.github.io/drupal-pece/)
-- Drupal Community: [Drupal.org](https://www.drupal.org/)
-
-## License
-
-This deployment infrastructure is part of the PECE project, licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt).
+- [PECE Project](https://pece-project.github.io/drupal-pece/)
+- [Docker Compose reference](https://docs.docker.com/compose/)
+- [Easypanel documentation](https://easypanel.io/docs)
+- [Kubernetes documentation](https://kubernetes.io/docs/)
+- [OpenTofu documentation](https://opentofu.org/docs/)

@@ -1,6 +1,7 @@
 include docker.mk
 
-.PHONY: test install build site-install distro-install nuxt-install nuxt-build nuxt-lint nuxt-run start-automation k8s-build k8s-deploy k8s-rollback k8s-status k8s-logs
+.PHONY: test install build site-install distro-install nuxt-install nuxt-build nuxt-lint nuxt-run start-automation k8s-build k8s-deploy k8s-rollback k8s-status k8s-logs \
+        compose-deploy compose-rollback compose-status compose-logs
 
 DRUPAL_VER ?= 8
 PHP_VER ?= 8.1
@@ -115,3 +116,23 @@ k8s-status:
 ##		Default: show all logs.
 k8s-logs:
 	cd deploy && $(MAKE) logs
+
+##	compose-deploy	:	Deploy to VPS 1 via Docker Compose + Easypanel.
+##		Requires env: VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_DEPLOY_PATH, DB_PASSWORD, DB_ROOT_PASSWORD
+compose-deploy:
+	cd deploy && $(MAKE) compose-deploy
+
+##	compose-rollback	:	Rollback Docker Compose deployment to a specific image tag.
+##		Requires: TAG=sha-<short> (e.g. make compose-rollback TAG=sha-abc1234)
+compose-rollback:
+	cd deploy && $(MAKE) compose-rollback TAG=$(TAG)
+
+##	compose-status	:	Show running Docker Compose services on VPS 1.
+##		Requires env: VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_DEPLOY_PATH
+compose-status:
+	cd deploy && $(MAKE) compose-status VPS_HOST=$(VPS_HOST) VPS_USER=$(VPS_USER) VPS_SSH_KEY=$(VPS_SSH_KEY) VPS_DEPLOY_PATH=$(VPS_DEPLOY_PATH)
+
+##	compose-logs	:	Tail logs from Docker Compose services on VPS 1.
+##		Optionally pass SERVICE=php|nginx|mariadb to limit output.
+compose-logs:
+	cd deploy && $(MAKE) compose-logs VPS_HOST=$(VPS_HOST) VPS_USER=$(VPS_USER) VPS_SSH_KEY=$(VPS_SSH_KEY) VPS_DEPLOY_PATH=$(VPS_DEPLOY_PATH) SERVICE=$(SERVICE)

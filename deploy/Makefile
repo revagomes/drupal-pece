@@ -1,4 +1,5 @@
-.PHONY: help build build-php build-nginx push deploy rollback logs shell shell-php shell-nginx shell-mariadb status validate clean
+.PHONY: help build build-php build-nginx push deploy rollback logs shell shell-php shell-nginx shell-mariadb status validate clean \
+        compose-deploy compose-rollback compose-status compose-logs
 
 # Environment variables with defaults
 PROJECT_NAME ?= pece
@@ -8,6 +9,14 @@ CONTAINER_REGISTRY ?=
 BUILD_ENGINE ?= podman
 NAMESPACE ?= pece
 KUBECTL ?= kubectl
+TAG ?=
+SERVICE ?=
+
+# VPS / Docker Compose variables
+VPS_HOST ?=
+VPS_USER ?=
+VPS_SSH_KEY ?=
+VPS_DEPLOY_PATH ?= /opt/pece2
 
 # Derived variables
 PHP_IMAGE = $(if $(CONTAINER_REGISTRY),$(CONTAINER_REGISTRY)/)$(PROJECT_NAME)-php:$(IMAGE_TAG)
@@ -67,32 +76,64 @@ endif
 ##		Set ENV variable to specify environment (default: production).
 deploy:
 	@echo "Deploying $(PROJECT_NAME) to Kubernetes ($(ENV))..."
-	@./scripts/deploy.sh --namespace $(NAMESPACE) --wait
+	@./scripts/deploy-k8s.sh --namespace $(NAMESPACE) --wait
 	@echo "Finished deploying $(PROJECT_NAME)."
 
 ##	rollback	:	Rollback Kubernetes deployment to previous version.
 rollback:
 	@echo "Rolling back $(PROJECT_NAME) deployment..."
-	@./scripts/rollback.sh all --namespace $(NAMESPACE) --wait
+	@./scripts/rollback-k8s.sh all --namespace $(NAMESPACE) --wait
 	@echo "Finished rollback."
 
 ##	rollback-php	:	Rollback PHP-FPM deployment only.
 rollback-php:
 	@echo "Rolling back PHP-FPM deployment..."
-	@./scripts/rollback.sh php --namespace $(NAMESPACE) --wait
+	@./scripts/rollback-k8s.sh php --namespace $(NAMESPACE) --wait
 	@echo "Finished PHP-FPM rollback."
 
 ##	rollback-nginx	:	Rollback Nginx deployment only.
 rollback-nginx:
 	@echo "Rolling back Nginx deployment..."
-	@./scripts/rollback.sh nginx --namespace $(NAMESPACE) --wait
+	@./scripts/rollback-k8s.sh nginx --namespace $(NAMESPACE) --wait
 	@echo "Finished Nginx rollback."
 
 ##	rollback-mariadb	:	Rollback MariaDB StatefulSet.
 rollback-mariadb:
 	@echo "Rolling back MariaDB StatefulSet..."
-	@./scripts/rollback.sh mariadb --namespace $(NAMESPACE) --wait
+	@./scripts/rollback-k8s.sh mariadb --namespace $(NAMESPACE) --wait
 	@echo "Finished MariaDB rollback."
+
+# --- Docker Compose / Easypanel targets (VPS 1) ----------------------------
+
+##	compose-deploy	:	Deploy to VPS 1 via Docker Compose + Easypanel.
+##		Requires: VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_DEPLOY_PATH, DB_PASSWORD, DB_ROOT_PASSWORD
+compose-deploy:
+	@echo "Deploying $(PROJECT_NAME) to VPS 1 via Docker Compose..."
+	@./scripts/deploy-compose.sh
+	@echo "Finished Docker Compose deployment."
+
+##	compose-rollback	:	Rollback Docker Compose deployment to a specific image tag.
+##		Requires: TAG=sha-<short> (e.g. make compose-rollback TAG=sha-abc1234)
+compose-rollback:
+ifndef TAG
+	$(error TAG is not set. Use: make compose-rollback TAG=sha-<short>)
+endif
+	@echo "Rolling back $(PROJECT_NAME) to tag $(TAG)..."
+	@./scripts/rollback-compose.sh --tag $(TAG)
+	@echo "Finished rollback to tag $(TAG)."
+
+##	compose-status	:	Show running Docker Compose services on VPS 1.
+compose-status:
+	@ssh -i "$(VPS_SSH_KEY)" -o StrictHostKeyChecking=no \
+		"$(VPS_USER)@$(VPS_HOST)" \
+		"cd '$(VPS_DEPLOY_PATH)' && docker compose ps"
+
+##	compose-logs	:	Tail logs from Docker Compose services on VPS 1.
+##		Optionally pass SERVICE=php|nginx|mariadb to limit output.
+compose-logs:
+	@ssh -i "$(VPS_SSH_KEY)" -o StrictHostKeyChecking=no \
+		"$(VPS_USER)@$(VPS_HOST)" \
+		"cd '$(VPS_DEPLOY_PATH)' && docker compose logs --tail=100 -f $(SERVICE)"
 
 ##	logs	:	View deployment logs.
 ##		You can optionally pass an argument with the component name to limit logs:
