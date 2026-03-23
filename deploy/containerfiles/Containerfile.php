@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure and install PHP extensions required by Drupal
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+RUN apt-get update && apt-get install -y zlib1g-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
     gd \
     pdo \
